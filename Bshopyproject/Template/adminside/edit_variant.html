@@ -1,0 +1,109 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% block content %}
+<h1>edit_product page</h1>
+
+<div class="container">
+    {% for msg in messages %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                     {% if msg.tags == 'error' %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                      {% else %}
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                      {% endif %}
+                        {{ msg }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    
+    <form method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        
+        <div class="row">
+            
+            <div class="col-md-6">
+            
+                
+            
+                <select class="form-select" aria-label="Default select example" name="size" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
+                    <option selected>size</option>
+                    {% for size in sizes %}
+                        <option value="{{ size.id }}" {% if size.id == variants.size.id %}selected{% endif %}>
+                            {{ size.size }}
+                        </option>
+                    {% endfor %}
+                </select>
+                
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" value="{{ variants.price }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input type="number" class="form-control" id="stock" name="stock" value="{{ variants.stock }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="images" class="form-label">Images</label>
+                    <input type="file" class="form-control" id="images" name="images" multiple>
+                </div>
+                <div class="mb-3">
+                    <label for="existing_images" class="form-label">Existing Images</label>
+                    <div class="d-flex" id="existing-images-container">
+                        {% for image in images %}
+                            <div class="me-2">
+                                <img src="{{ image.image.url }}" alt="Variant Image" width="100" height="100">
+                                <a href="{% url 'delete-image' image.id%}" class="btn btn-outline-danger m-1">Delete</a>
+
+                            </div>
+                        {% empty %}
+                            <p>No existing images</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+            
+                
+            </div>
+                
+        </div>  
+            
+                
+        <button type="submit" class="btn btn-primary">SUBMIT</button>
+    </form>
+</div>
+<script>
+    // Image preview functionality
+    function previewImages(input) {
+        var container = document.getElementById('existing-images-container');
+        container.innerHTML = '';
+
+        if (input.files && input.files.length > 0) {
+            for (var i = 0; i < input.files.length; i++) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var image = document.createElement('img');
+                    image.src = e.target.result;
+                    image.alt = 'Variant Image';
+                    image.width = 100;
+                    image.height = 100;
+                    container.appendChild(image);
+                };
+                reader.readAsDataURL(input.files[i]);
+            }
+        }
+    }
+
+    // Add event listener to the file input
+    var fileInput = document.getElementById('images');
+    fileInput.addEventListener('change', function() {
+        previewImages(this);
+    });
+</script>
+
+{% endblock %}

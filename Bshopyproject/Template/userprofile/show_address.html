@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load static %}
+
+<div class="container py-5">
+  <div class="d-flex justify-content-end">
+      <a href="{% url 'add-address' %}" class="btn btn-primary btn-lg">Add Address</a>
+  </div>
+  <div class="row">
+    {% for address in addresses %}
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ address.first_name }} {{ address.last_name }}</h5>
+          <p class="card-text"><strong>First Name:</strong> {{ address.first_name }}</p>
+          <p class="card-text"><strong>Last Name:</strong> {{ address.last_name }}</p>
+          <p class="card-text"><strong>Email:</strong> {{ address.email }}</p>
+          <p class="card-text"><strong>Phone Number:</strong> {{ address.phone_number }}</p>
+          <p class="card-text"><strong>Address Line 1:</strong> {{ address.address_line1 }}</p>
+          {% if address.address_line_2 %}
+          <p class="card-text"><strong>Address Line 2:</strong> {{ address.address_line2 }}</p>
+          {% endif %}
+          <p class="card-text"><strong>City:</strong> {{ address.city }}</p>
+          <p class="card-text"><strong>State:</strong> {{ address.state }}</p>
+          <p class="card-text"><strong>Postal Code:</strong> {{ address.post_code }}</p>
+          <p class="card-text"><strong>Country:</strong> {{ address.country }}</p>
+          <div class="d-flex justify-content-between">
+            <a href="{% url 'edit-address-userside' address.id %}" class="btn btn-primary ">Edit</a>
+            <a href="{% url 'delete-address' address.id %}" class="btn btn-primary">Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% if forloop.counter|divisibleby:2 %}
+  </div>
+  <div class="row">
+    {% endif %}
+    {% endfor %}
+  </div>
+  
+</div>
+
+{% endblock %}

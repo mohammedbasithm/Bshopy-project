@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<section style="background-color: #f5f5f5;">
+    <div class="container py-5">
+      <div class="row">
+        <div class="col">
+          <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a href="" style="color: #333;">Order</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'show-address' %}" style="color: #333;">Address</a></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+  
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <div class="d-flex justify-content-center">
+                <img src="https://th.bing.com/th/id/OIP.AULBZmvneENxrYYlPAZghgHaHa?w=178&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7" alt="avatar"
+                  class="rounded-circle img-fluid" style="width: 150px;">
+              </div>
+              <h5 class="my-3">{{user.username}}</h5>
+              <p class="text-muted mb-1">User Profile</p>
+              <p class="text-muted mb-4">{{user.email}}</p>
+              <div class="d-flex justify-content-center mb-2">
+                <a href="{% url 'signout'%}" class="btn btn-primary" style=" border-radius: 20px;">Logout</a>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-4 mb-lg-0">
+            <div class="card-body p-0">
+              <ul class="list-group list-group-flush rounded-3">
+  
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row justify-content-center">
+                <div class="col">
+                  <h6>Username:</h6>
+                  <p>{{ user.username }}</p>
+                </div>
+                <div class="col">
+                  <h6>Email:</h6>
+                  <p>{{ user.email }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% if address %}
+          <div class="text-right mb-3"> <!-- Add the text-right class here -->
+            <div class="btn-group-vertical">
+              <a href="{% url 'add-address' %}" class="btn btn-primary btn-block mb-3" style="background-color: #1e5f0f; border-color: #0f1010;">My Address</a>
+              <a href="{% url 'order' %}" class="btn btn-primary btn-block mb-3" style="background-color:#1e5f0f; border-color: #0f1010;">My Orders</a>
+              <a href="{% url 'user-wallet' %}" class="btn btn-primary btn-block mb-3" style="background-color: #1e5f0f; border-color: #0f1010;">My Wallet </a>
+              <a href="#" class="btn btn-primary btn-block mb-3" style="background-color: #1e5f0f; border-color: #0f1010;">Refer and Earn </a>
+  
+            </div>
+          </div>
+          {% else %}
+          <div class="text-right mb-3"> <!-- Add the text-right class here -->
+            <div class="btn-group-vertical">
+              <a href="{% url 'add-address' %}" class="btn btn-primary btn-block mb-3" >Add Address</a>
+              <a href="{% url 'order' %}" class="btn btn-primary btn-block mb-3">My Orders</a>
+              <a href="{% url 'user-wallet' %}" class="btn btn-primary btn-block mb-3" >My Wallet </a>
+              <a href="#" class="btn btn-primary btn-block mb-3" >Refer and Earn </a>
+            </div>
+          </div>
+          {% endif %}
+          
+        </div>
+      </div>
+    </div>
+  </section>
+  
+{% endblock %}

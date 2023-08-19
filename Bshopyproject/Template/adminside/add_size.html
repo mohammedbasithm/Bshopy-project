@@ -1,0 +1,29 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% block content %}
+
+
+<div class="container-fluid" style="margin-top: 130px; margin-bottom: 20px;">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title fw-semibold mb-4">ADD SIZE</h5>
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{% url 'add-size' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_name" class="form-label">Brand name</label>
+                                <input type="number" class="form-control" id="id_name" name="size">
+                            </div>
+                            <button type="submit" class="btn btn-primary">SUBMIT</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+<div class="card-body">
+    <h5 class="card-title">Wallet Details</h5>
+    <p>Username: {{ wallet.user.username }}</p>
+    <p>Balance: {{ user_balance }}</p>
+    <!-- Add other wallet details if needed -->
+
+    <h5 class="card-title">Transaction History</h5>
+    {% if wallet.transactions.all %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Credited/Debited</th>
+                <th>Order ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in wallet.transactions.all %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.amount }}</td>
+                <td>
+                  {% if transaction.transaction_type == 'Cancelled' or transaction.transaction_type == 'return' %}
+                    
+                  <span style="color:green;">Credited++</span>
+                  {% elif transaction.transaction_type == 'Purchased' %}
+                    
+                  <span style="color:red;">Debited--</span>
+                  {% endif %}
+                </td>
+                <td>{{ transaction.order_id.id }}({{ transaction.get_transaction_type_display }})</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No transactions found.</p>
+    {% endif %}
+</div>
+{% endblock %}

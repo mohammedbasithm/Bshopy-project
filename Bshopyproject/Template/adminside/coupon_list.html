@@ -1,0 +1,41 @@
+{%extends 'adminside/base.html'%}
+{% load static %}
+{% block content %}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Coupon Code</th>
+            <th scope="col">Coupon Price</th>
+            <th scope="col">Minimum Amount</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for coupon in coupons %}
+    
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ coupon.coupon_code }}</td>
+                        <td>{{ coupon.coupon_price }}</td>
+                        <td>{{ coupon.minimum_amount }}</td>
+                        <td>
+                            
+                            {% if coupon.is_expired %}
+                                <a href="{% url 'disable-coupon' coupon.id %}" class="btn btn-outline-danger m-1">Disable</a>
+                            {% else %}
+                                <a href="{% url 'enable-coupon' coupon.id %}" class="btn btn-outline-success m-1">Enable</a>
+                            {% endif %}
+
+                        </td>
+                        <td>
+                            <a href="{% url 'edit-coupon' coupon.id %}" class="btn btn-outline-primary m-1">Edit</a>
+
+                        </td>
+                    </tr>
+                   
+        {% endfor %}    
+    </tbody>
+</table>
+{%endblock%}

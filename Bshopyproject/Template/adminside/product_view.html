@@ -1,0 +1,52 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% block content %}
+
+<h1>product variant</h1>
+<a href="{% url 'add-variant' products.id %}" class="btn btn-outline-danger m-1">Add Variant</a>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Id</th>
+            <th scope="col">Size</th>
+            <th scope="col">Price</th>
+            <th scope="col">discount price</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Acitons</th>
+            <th scope="col">Edit</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+    {% for variant in variants %}
+        {% with random_variant=variant.productimage_set.all|random %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td><img src="{{ random_variant.image.url }}" alt="" width="30" height="40"></td>
+                        <td>{{ variant.product.name }}</td>
+                        <td>{{ variant.id}}</td>
+                        <td>{{variant.size}}</td>
+                        <td>{{ variant.price}}</td>
+                        <td>{{ variant.discount_price}}</td>
+                        <td>{{ variant.stock}}</td>
+                        <td>
+                            {% if variant.is_active %}
+                                <a href="{% url 'disable_variant' variant.id%}" class="btn btn-outline-danger m-1">Disable</a>
+                            {% else%}
+                                <a href="{% url 'enable_variant' variant.id%}" class="btn btn-outline-success m-1">Enable</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'edit-variant' variant.id %}" class="btn btn-outline-primary m-1">Edit</a>
+
+                        </td>
+                    </tr>
+        {% endwith %}         
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

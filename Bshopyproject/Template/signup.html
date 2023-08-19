@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block link %}
+
+    <style>
+        .password-toggle-icon {
+            position: absolute;
+            right: 15px;
+            top: 30%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+
+<section class="gradient-custom">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card breadcrumb text-dark" style="border-radius: 1rem;">
+          <div class="card-body p-5 text-center">
+            {% if messages %}
+              <div class="messages">
+                {% for message in messages %}
+                  <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'info' %}alert-info{% endif %}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+            <div class="mb-md-5 mt-md-4 pb-5">
+
+              <h2 class="fw-bold mb-2 text-uppercase">SignUp</h2>
+              <p class="text-dark-50 mb-5">Please enter your login and password!</p>
+
+              <form action="" id="signup" method="post">
+
+                {% csrf_token %}
+
+                <div class="form-outline form-white mb-4">
+                  <input type="text" id="username" class="form-control form-control-lg" name="username" required/>
+                  <label class="form-label" for="username">User Name</label>
+                </div>
+
+                <div class="form-outline form-white mb-4">
+                  <input type="email" id="email"  class="form-control form-control-lg" name="email" required/>
+                  <label class="form-label" for="email">Email</label>
+                </div>
+
+                
+                <div class="position-relative ">
+                  <input type="password" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,10}$"
+                         title="Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 special character, and be 8-10 characters long."
+                         id="pass1" class="form-control form-control-lg" name="pass1" required>
+                  <i class="fas fa-eye password-toggle-icon" id="pass1-toggle" onclick="togglePasswordVisibility('pass1')"></i>
+                  <label class="form-label" for="pass1">Enter Password</label>
+              </div>
+  
+              <div class="position-relative mt-4">
+                  <input type="password" id="pass2" class="form-control form-control-lg" name="pass2" required>
+                  <i class="fas fa-eye password-toggle-icon" id="pass2-toggle" onclick="togglePasswordVisibility('pass2')"></i>
+                  <label class="form-label" for="pass2">Confirm Password</label>
+              </div>
+
+                <button class="btn btn-primary btn-lg px-5" type="submit">SignUp</button>
+              </form>
+
+            </div>
+            <div>
+              <p class="mb-0">Already a user? <a href="{% url 'signin'%}" class="text-dark-50 fw-bold">Login</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+{% block script %}
+<script>
+  function togglePasswordVisibility(inputId) {
+      var passwordInput = document.getElementById(inputId);
+      var passToggle = document.getElementById(inputId + '-toggle');
+      if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          passToggle.classList.remove("fa-eye");
+          passToggle.classList.add("fa-eye-slash");
+      } else {
+          passwordInput.type = "password";
+          passToggle.classList.remove("fa-eye-slash");
+          passToggle.classList.add("fa-eye");
+      }
+  }
+</script>
+{% endblock %}

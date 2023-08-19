@@ -1,0 +1,87 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% block content %}
+<h1>add variant</h1>
+<div class="container">
+    <!-- {% if error_message %}
+    <p style="color: red;">{{ error_message }}</p>
+{% endif %} -->
+{% for msg in messages %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                     {% if msg.tags == 'error' %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                      {% else %}
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                      {% endif %}
+                        {{ msg }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    <form method="post" enctype="multipart/form-data" action="{% url 'add-variant' products %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                
+
+                <select class="form-select" aria-label="Default select example" name="size" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
+                    <option selected>size</option>
+                    {% for size in sizes %}
+                        <option value="{{size.id}}">{{size.size}}</option>
+                    {% endfor %}
+                </select>
+                
+                
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="discount">Discount </label>
+                    <input type="number" class="form-control" id="discount" name="discount" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input type="number" class="form-control" id="stock" name="stock" required>
+                </div>
+                <div class="form-group">
+                    <label for="images">Variant Images</label>
+                    <input type="file" class="form-control-file" id="images" onchange="previewImages(event, 'preview')" name="images" multiple required>
+
+                </div>
+                <div id="preview" ></div>
+            </div>
+            
+        </div>
+        <button type="submit" class="btn btn-primary">SUBMIT</button>
+    </form>
+</div>
+<script>
+    function previewImages(event, previewId) {
+        var input = event.target;
+        var previewElement = document.getElementById(previewId);
+        previewElement.innerHTML = ''; // Clear any previous previews
+        
+        if (input.files && input.files.length > 0) {
+            for (var i = 0; i < input.files.length; i++) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.display = 'inline-block'; // Display images in a row
+                    img.style.maxWidth = '150px'; // Set the maximum width of each image
+                    img.style.marginTop = '10px';
+                    previewElement.appendChild(img);
+                };
+                
+                reader.readAsDataURL(input.files[i]);
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'adminside/base.html' %} 
+{% load static %}
+
+{% block content %}
+<h2>hello</h2>
+<style>
+    .not-visible {
+        display: none;
+    }
+</style>
+<div class="col-12 grid-margin stretch-card">
+    
+    <div class="card">
+        <h4 class="pt-2 px-2">Upload images for the product  </h4>
+        <br>
+        <h5 class="px-2"> Name of the product :: {{product_name}}</h5>
+        <h6 class="px-2"> Variant :: {{variant_name}}</h6>
+        <h6 class="px-2"> Color :: {{color_name}}</h6>
+        
+      <div class="card-body">
+       
+        <h4>Select Image</h4>
+        <form class="border border-info pt-3 col-lg-6" method="post" action="" id="image-form" >
+
+          {% csrf_token %}
+           {{form.as_p}}
+          
+        </form>
+      </div>
+      <div class=" py-4 mx-auto col-lg-6">
+      <div id="alert-box"> </div>
+      <div class="image-area mb-3" ><div class="mt-3" id="image-box" style="max-height: 400px; max-width: 400px;"></div></div>
+     <button  id="confirm-btn" class="btn btn-primary mb-2 not-visible">Upload Image</button>
+     </div>
+    </div>
+  </div>
+  <div class=" card">
+  <div class="container pb-2">
+    <h4 class="pt-2 ">Previously uploaded images</h4>
+    <div class="row row-cols-2 row-cols-md-4 g-4 pt-2 ">
+      {% for image in images %}
+      <div class="col">
+        <div class="card border border-info mt-1">
+          <img src="{{ image.image.url }}" class="card-img-top" alt="Uploaded Image">
+          
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div id="finish" class="">
+    <a href="#" onclick="closePopupWindow()"><button type="submit" class="btn btn-primary mb-2 float-right m-4">FINISH</button></a>
+  </div>
+
+</div>
+
+<script>
+  function closePopupWindow() {
+    window.close();
+  }
+</script> 
+
+<style>
+ #upload {
+    opacity: 0;
+}
+.image-area {
+    border: 2px dashed rgba(255, 255, 255, 0.7);
+    padding: 1rem;
+}
+body {
+    min-height: 100vh;
+    background-color: #7b9a75;
+    background-image: linear-gradient(147deg, #7b9a75 0%, #d7dde8 100%);
+}
+</style>   
+
+
+
+
+<script>
+    const alertBox = document.getElementById('alert-box')
+    const imageBox = document.getElementById('image-box')
+    const imageForm = document.getElementById('image-form')
+    const confirmBtn = document.getElementById('confirm-btn')
+    const input = document.getElementById('id_image')
+     
+    const csrf = document.getElementsByName('csrfmiddlewaretoken')
+     
+    input.addEventListener('change', ()=>{
+        alertBox.innerHTML = ""
+        confirmBtn.classList.remove('not-visible')
+        const img_data = input.files[0]
+        const url = URL.createObjectURL(img_data)
+     
+        imageBox.innerHTML = `<img src="${url}" id="image" width="700px">`
+        var $image = $('#image')
+        
+     
+        $image.cropper({
+            aspectRatio: 1200 / 1486,
+            viewMode: 1,
+            strict: true,
+            zoomable: true,
+            
+        });
+         
+        console.log(cropper);
+        var cropper = $image.data('cropper');
+        confirmBtn.addEventListener('click', ()=>{
+            cropper.getCroppedCanvas({width: 1200, height: 1486}).toBlob((blob) => {
+                
+                const fd = new FormData();
+                fd.append('csrfmiddlewaretoken', csrf[0].value)
+                fd.append('image', blob, 'my-image.png');
+     
+                $.ajax({
+                    type:'POST',
+                    url: imageForm.action,
+                    enctype: 'multipart/form-data',
+                    data: fd,
+                    success: function(response){
+                        
+                        alertBox.innerHTML = `<div class="alert alert-success" role="alert">
+                                                Successfully saved and cropped the selected image
+                                            </div>`
+                        // Reload the page after successful save
+                        location.reload(); // This will refresh the page
+                    },
+                    error: function(error){
+                        
+                        alertBox.innerHTML = `<div class="alert alert-danger" role="alert">
+                                                Ups...something went wrong
+                                            </div>`
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                })
+            })
+        })
+    })
+    </script>
+
+    
+{% endblock %}

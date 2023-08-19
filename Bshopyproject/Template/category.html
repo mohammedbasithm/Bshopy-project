@@ -1,0 +1,52 @@
+{% extends 'base.html'%}
+{% load static%}
+{% block body %}
+<style>
+    .card-img-top{
+      object-fit: cover;
+      height: 300px;
+      width: 100%;
+    }
+    
+</style>
+<div class="container mt-5">
+   
+    <h2 class="text-center mb-5">All Products </h2>
+    
+    <hr>
+    <div class="container mt-5">
+      <div class="row">
+          {% for product in products %}
+              {% if product.productvariant_set.all %}
+                  {% with random_variant=product.productvariant_set.all|random %}
+                      {% if random_variant.productimage_set.exists %}
+                        {% if product.is_active %}
+                          <div class="col-lg-4 col-md-6 col-sm-12 py-3">
+                              <div class="card">
+                                  <a href="{% url 'productdetails' slug=random_variant.slug %}">
+                                      <img src="{{ random_variant.productimage_set.first.image.url }}" alt="{{ product.name }}" class="card-img-top">
+                                  </a>
+                                  <div class="card-body">
+                                      <h5 class="card-title">{{ product.name }}</h5>
+                                      {% if random_variant.discount_price is none %}
+                                      <p class="card-text">₹{{ random_variant.price }}</p>
+                                      {% else %}
+                                      <p class="card-text">₹{{random_variant.discount_price}} <del>₹{{ random_variant.price }}</del><h5 class="text" style="font-size: medium; color: forestgreen;">{{random_variant.discount}}% off</h5></p>
+                                      <p class="card-text">  </p> 
+                                      {% endif %}                                      <!-- Display more details as needed -->
+                                  </div>
+                              </div>
+                          </div>
+                        {% endif %}
+                      {% endif %}
+                  {% endwith %}
+              {% endif %}
+          {% endfor %}
+      </div>
+  </div>
+  
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+
+<div class="container-fluid" style="margin-top: 30px; margin-bottom: 20px;">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="cat-list-title fw-semibold mb-4 text-center">Wishlist</h5>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                
+                                <th scope="col" class="text-center ">Name</th>
+                                <th scope="col" class="text-center">Colour</th>
+                                <th scope="col" class="text-center">price</th>
+                                <th scope="col" class="text-center">Image</th>
+                                <th scope="col" class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for products in items %}
+                               
+                           
+                            <tr>
+                                
+                                <td class="text-center p-4">{{ products.product.product.name }}</td>
+                                <td class="text-center p-4">{{ products.product.size.size }}</td>
+                                {% if products.product.discount_price %}
+                                <td class="text-center p-4">{{ products.product.discount_price }}</td>
+                                {% else %}
+                                <td class="text-center p-4">{{ products.product.price }}</td>
+                                {% endif %}
+                                <td class="text-center align-middle p-1" style="width: 90px;"> <!-- Add "align-middle" class here -->
+                                    <!-- Set a fixed width for the image container -->
+                                    <img src="{{ products.product.productimage_set.first.image.url }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-height: 90px;">
+                                </td>
+                               
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center">
+                                        
+                                        
+                                        <div class="mb-2 p-4">
+                                            <a href="{% url 'remove-wishlist' products.product.id %}" class="btn btn-primary btn-sm">Remove</a>
+                                        </div>
+                                        {% if products.product.id in user_products %}
+                                        <div class="mb-2 p-4">
+                                            <a href="{% url 'cart' %}" class="btn btn-primary btn-sm">Go to Cart</a>
+                                        </div>
+                                        {% else %}
+                                        <div class="mb-2 p-4">
+                                            <a href="{% url 'add-cart' products.product.id %}" class="btn btn-primary btn-sm">Add to Cart</a>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        
+                                    </div>
+                                </td>
+                            </tr>
+                               
+                         
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

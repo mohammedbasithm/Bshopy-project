@@ -1,0 +1,91 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% block content %}
+<h1>add product</h1>
+<div class="container">
+    
+    <form method="post" enctype="multipart/form-data" action="{% url 'add-product' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name">Product Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="shortdescription">Short description</label>
+                    <input type="text" class="form-control" id="shortdescription" name="description" required>
+                </div>
+            
+                <select class="form-select my-2" aria-label="Default select example" name="category" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
+                    <option selected>category</option>
+                    {% for category in categories %}
+                        <option value="{{category.id}}">{{category.name}}</option>
+                    {% endfor %}
+                </select>
+                
+                
+                <select class="form-select" aria-label="Default select example" name="brand" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
+                    <option selected>Brand</option>
+                    {% for brand in brands %}
+                        <option value="{{brand.id}}">{{brand.name}}</option>
+                    {% endfor %}
+                </select>
+                <select class="form-select" aria-label="Default select example" name="size" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
+                    <option selected>size</option>
+                    {% for size in sizes %}
+                        <option value="{{size.id}}">{{size.size}}</option>
+                    {% endfor %}
+                </select>
+                
+                
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="discount">Discount </label>
+                    <input type="number" class="form-control" id="discount" name="discount" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input type="number" class="form-control" id="stock" name="stock" required>
+                </div>
+                <div class="form-group">
+                    <label for="images">Variant Images</label>
+                    <input type="file" class="form-control-file" id="images" onchange="previewImages(event, 'preview')" name="images" multiple required>
+
+                </div>
+                <div id="preview" ></div>
+            </div>
+            
+        </div>
+        <button type="submit" class="btn btn-primary">SUBMIT</button>
+    </form>
+</div>
+<script>
+    function previewImages(event, previewId) {
+        var input = event.target;
+        var previewElement = document.getElementById(previewId);
+        previewElement.innerHTML = ''; // Clear any previous previews
+        
+        if (input.files && input.files.length > 0) {
+            for (var i = 0; i < input.files.length; i++) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.display = 'inline-block'; // Display images in a row
+                    img.style.maxWidth = '150px'; // Set the maximum width of each image
+                    img.style.marginTop = '10px';
+                    previewElement.appendChild(img);
+                };
+                
+                reader.readAsDataURL(input.files[i]);
+            }
+        }
+    }
+</script>
+{% endblock %}

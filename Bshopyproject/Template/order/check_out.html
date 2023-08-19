@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% load static %}
+
+<!-- Shopping Cart -->
+<br>
+
+<form class="bg0 p-t-75 p-b-85">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 col-xl-7 m-auto mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        Selected Address
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user_address.first_name }} {{ user_address.last_name }}</h5>
+                        <p class="card-text">{{ user_address.email }}</p>
+                        <p class="card-text">
+                            {{ user_address.address_line_1 }}<br>
+                            {{ user_address.city }}, {{ user_address.state }},<br>
+                            {{ user_address.country }}, {{ user_address.postal_code }}
+                        </p>
+                        <p class="card-text">Ph: {{ user_address.phone_number }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-10 col-lg-7 col-xl-5 m-auto mb-4">
+                <div class="card p-4">
+                    <h4 class="m-0 pb-3">
+                        Cart Totals
+                    </h4>
+
+                    <div class="d-flex justify-content-between border-bottom pb-2">
+                        <span class="text-muted">Subtotal:</span>
+                        <span class="font-weight-bold">₹{{ subtotal }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom pb-2">
+                        <span class="text-muted">Discount:</span>
+                        <span class="font-weight-bold" style="color: darkgreen;">-₹{{ total_discount }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom pb-2">
+                        <span class="text-muted">Coupon Discount:</span>
+                        <span class="font-weight-bold"style="color: darkgreen;">-₹{{ coupon_price }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between border-bottom py-2">
+                        <span class="text-muted">Shipping charge:</span>
+
+                        {% if subtotal >= 1000 %}
+                        <span class="font-weight-bold" style="color: green;">Free Delivery</span>
+                        {% else %}
+                       
+                        <span class="font-weight-bold">Rs 50 </span> 
+                        
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between pt-3">
+                        <span class="text-dark font-weight-bold">Total:</span>
+                        <span class="font-weight-bold">₹{{ total_price }}</span>
+                    </div>
+                    <div class="custom-radio">
+                        <input type="radio" name="paymentOption" id="upi" value="upi" checked>
+                        <label for="upi">UPI</label>
+                        <input type="radio" name="paymentOption" id="cod" value="cod">
+                        <label for="cod">Cash on Delivery</label>
+                        {% if wallet_amount >= total_price %}
+                        <input type="radio" name="paymentOption" id="wallet" value="wallet">
+                        <label for="wallet">Wallet</label>
+                        {% else %}
+                        <p style="color:gray;">Your wallet amount ₹ {{ wallet_amount }} is not enough to cover the total price ₹ {{ total_price }}.</p>
+                        {% endif %}
+                        <br>
+                        <button class="btn btn-block btn-primary" id="proceedBtn" >Proceed to Payment</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+    <!-- jQuery Library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+
+
+    function initiateRazorpayPayment(){
+      
+    // Make an AJAX POST request to initiate the payment
+    $.ajax({
+        type: "POST",
+        url: "/initiate_payment/",  // Replace with the actual URL of your Django view
+        headers: { "X-CSRFToken": "{{ csrf_token }}" }, // Add this line to include the CSRF token
+        dataType: 'json',  // Expect JSON response from the server
+        success: function(response) {
+            // Update the options with the received data from the server
+            var options = {
+                "key": response.key,
+                "amount": response.amount,
+                "currency": response.currency,
+                "name": "B-shopy",
+                "description": "Thank you for purchasing from us",
+                "image": "{%static 'user/img/logo1.png'%}",
+                "order_id": response.order_id,                 
+                "handler": function (response) {
+                    alert(response.razorpay_payment_id);
+                    alert(response.razorpay_order_id);
+                    alert(response.razorpay_signature);
+               
+                    var paymentId = response.razorpay_payment_id;
+                    var orderId = response.razorpay_order_id;
+                    var signature = response.razorpay_signature;
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/online_payment_order/{{user_address.id}}",
+                        headers: { "X-CSRFToken": "{{ csrf_token }}" },
+                        data: {
+                            payment_id: paymentId,
+                            orderId: orderId,
+                            signature: signature
+                        },
+                        success: function(response) {
+                            var id = response.orderId
+                            console.log("Order ID:", id);
+                            window.location.href ="{% url 'order-success' %}";
+                                                    
+                            console.log("Order placed successfully!");
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle the error if any
+                            console.log(xhr.responseText);
+                            alert("Error placing the order. Please try again.");
+                        }
+                    });
+               
+                    
+                },
+                "prefill": {
+                    "name": "{{user_add.name}}",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+
+            // Create a new instance of Razorpay with updated options
+            var rzp1 = new Razorpay(options);
+
+            // Handle the payment response
+            rzp1.on('payment.failed', function(response) {
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
+            });
+
+            // Open the Razorpay payment popup
+            rzp1.open();
+        },
+        error: function(xhr, status, error) {
+            // Handle the error if any
+            console.log(xhr.responseText);
+            alert("Error initiating payment. Please try again.");
+        }
+    });
+
+    e.preventDefault();
+};
+document.getElementById("proceedBtn").addEventListener("click", function (e) {
+    e.preventDefault()
+    var paymentOption = document.querySelector('input[name="paymentOption"]:checked').value;
+
+   
+    if (paymentOption === "cod") {
+      // Code for Cash on Delivery
+      window.location.href = "{% url 'place-order' user_address.id %}";
+      console.log("Cash on Delivery selected");
+    } else if (paymentOption === "upi") {
+        console.log('era');
+      // Code for Razorpay
+      initiateRazorpayPayment();
+      console.log("Pay Using Razorpay selected");
+    } else if (paymentOption === "wallet") {
+      // Code for Pay Using Wallet\
+      alert("Your Paying using wallet");
+      window.location.href = "{% url 'pay-wallet' user_address.id %}";
+      console.log("Pay Using Wallet selected");
+    }
+  });
+</script>
+{% endblock %}

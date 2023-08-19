@@ -1,0 +1,23 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+            <div class="d-flex justify-content-center">
+                <img src="https://cdn.pixabay.com/photo/2020/07/14/13/07/icon-5404125_1280.png" alt="avatar"
+                class="rounded-circle img-fluid" style="width: 150px;">
+            </div>
+            <h5 class="my-3">{{user.username}}</h5>
+            <p class="text-muted mb-1">Admin Profile</p>
+            <p class="text-muted mb-4">{{user.email}}</p>
+            <div class="d-flex justify-content-center mb-2">
+                <a href="{% url 'signout'%}" class="btn btn-primary" style=" border-radius: 20px;">Logout</a>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

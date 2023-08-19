@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+ <!-- Page Header Start -->
+ <div class="container-fluid bg-secondary mb-5">
+    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+        <h1 class="font-weight-semi-bold text-uppercase mb-3">Our Shop</h1>
+        <div class="d-inline-flex">
+            <p class="m-0"><a href="#">Home</a></p>
+            <p class="m-0 px-2">-</p>
+            <p class="m-0">Shop</p>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+<!-- Shop Start -->
+<div class="container-fluid pt-5">
+    <div class="row px-xl-5">
+        <!-- Shop Sidebar Start -->
+        <div class="col-lg-3 col-md-12">
+                <h5 class="font-weight-semi-bold mb-4">Filter </h5>
+                
+            <!-- Size Start -->
+            <div class="mb-5">
+                <button class="btn btn-primary d-md-none" type="button" data-toggle="collapse" data-target="#filterOptions" aria-expanded="false" aria-controls="filterOptions">
+                    Show Filters
+                </button>
+                <div id="filteredResultsContainer"></div>
+                <form id="filterForm">
+                    <div class="form-group">
+                        <label for="categoryFilter">Category:</label>
+                        <select class="form-control" name="categoryFilter">
+                            <option value="all">All</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="brandFilter">Brands:</label>
+                        <select class="form-control" name="brandFilter">
+                            <option value="all">All</option>
+                            {% for brand in brands %}
+                            <option value="{{ brand.id }}">{{ brand }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="priceFilter">Price:</label>
+                        <select class="form-control" name="priceFilter">
+                            <option value="all">All</option>
+                            <option value="under50">Under 5000</option>
+                            <option value="50to100">5000 to 30000</option>
+                            <option value="100to200">30000 to 50000</option>
+                            <!-- Add more price range options as needed -->
+                        </select>
+                    </div>
+                
+                    <br>
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                </form>
+            </div>
+            <!-- Size End -->
+        </div>
+        <!-- Shop Sidebar End -->
+
+
+        <!-- Shop Product Start -->
+        <div class="col-lg-9 col-md-12">
+            <div class="row pb-3">
+                <div class="col-12 pb-1">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <form action="">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search by name">
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-transparent text-primary">
+                                        <i class="fa fa-search"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="dropdown ml-4">
+                            <button class="btn border dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false">
+                                        Sort by
+                                    </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="triggerId">
+                                <a class="dropdown-item" href="#">Latest</a>
+                                <a class="dropdown-item" href="#">Popularity</a>
+                                <a class="dropdown-item" href="#">Best Rating</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% for product in products %}
+                    {% if product.productvariant_set.all %}
+                        {% with random_variant=product.productvariant_set.all|random %}
+                            {% if random_variant.productimage_set.exists %}
+                                {% if product.is_active %}
+                                    <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
+                                        <div class="card product-item border-0 mb-4">
+                                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                            <img class="img-fluid w-100" src="{{ random_variant.productimage_set.first.image.url }}" alt="">
+                                        </div>
+                                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                            <h6 class="text-truncate mb-3">{{ product.name }}</h6>
+                                            <div class="d-flex justify-content-center">
+                                                {% if random_variant.discount_price %}
+                                                <h6>{{ random_variant.discount_price }}</h6>
+                                                <h6 class="text-muted ml-2"><del>{{ random_variant.price }}</del></h6><br>
+                                                <h5 class="text" style="font-size: medium; color: forestgreen;">{{ random_variant.discount }}% off</h5>
+                                                {% else %}
+                                                <h6 class="text-muted ml-2">{{ random_variant.price }}</h6>
+                                                {% endif %}
+                                            </div>
+                                        </div>                                        
+                                        <div class="card-footer d-flex justify-content-between bg-light border">
+                                            <a href="{% url 'productdetails' slug=random_variant.slug %}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                            <a onclick="addToCart('{{product.id}}')"  class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                                        </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endwith %}
+                    {% endif %}
+                {% endfor %}
+                <div class="col-12 pb-1">
+                    <nav aria-label="Category pagination">
+                        <ul class="pagination justify-content-center">
+                          {% if products.has_previous %}
+                          <li class="page-item">
+                            <a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a>
+                          </li>
+                          {% endif %}
+                          
+                          {% for num in products.paginator.page_range %}
+                          <li class="page-item {% if num == products.number %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                          </li>
+                          {% endfor %}
+                          
+                          {% if products.has_next %}
+                          <li class="page-item">
+                            <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
+                          </li>
+                          {% endif %}
+                        </ul>
+                      </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Shop Product End -->
+    </div>
+</div>
+<!-- Shop End -->
+
+{% endblock %}
+{% block script %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+function addToCart(product_id) {
+                
+                // Make an AJAX POST request
+                $.ajax({
+                    type: "GET",
+                    url: "/get-variant/", // Replace with the actual URL of your Django view to apply the coupon
+                    //headers: { "X-CSRFToken": "{{ csrf_token }}" }, // Add this line to include the CSRF token
+                    data: { product_id: product_id },
+                    dataType: 'json',
+                    success: function(response) {
+                            // Access the variants array from the response
+                            //console.log(response)    
+                            var variants = response.variants;                            
+                            // Create an array to hold the size options
+                            var sizeOptions = [];
+
+                            // Iterate through the variants array
+                            for (var i = 0; i < variants.length; i++) {
+                                var variant = variants[i];
+                                var variantSize = variant.size;
+                                var variantId = variant.id;
+
+                                // Add each size to the sizeOptions array
+                                sizeOptions.push({
+                                    Id : variantId,
+                                    Size : variantSize
+                                });
+
+                                
+                            }
+
+                            // Create an array containing only the 'Size' values
+                            const sizeOptionsForInput = sizeOptions.map(option => option.Size);
+
+                            // Display the size options using SweetAlert
+                            Swal.fire({
+                                title: 'Select Size',
+                                input: 'radio',
+                                inputOptions: sizeOptionsForInput,
+                                showCancelButton: true,
+                                confirmButtonText: 'Select',
+                                cancelButtonText: 'Cancel',
+                                inputValidator: (value) => {
+                                    if (!value) {
+                                        return 'You must select a size';
+                                    }
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var selectedSize = result.value;
+                                    // Perform actions with the selectedSize
+
+                                    console.log('Selected Size:------', selectedSize);
+                                    console.log('Selected Variant Id:', sizeOptions[selectedSize].Id);
+                                    var variant_id = sizeOptions[selectedSize].Id
+                                    window.location.href = "/addcart/"+ variant_id + "/";
+                                    // Make an AJAX POST request                                    
+                                }
+                            });
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle the error if any
+                        //console.log(xhr.responseText);
+                        //alert("Coupon Code Not Found! Please try again.");
+                        try {
+                            var alert_msg = JSON.parse(xhr.responseText);
+                            //alert(alert_msg.error);
+                            //showModal(alert_msg.error);
+                            couponCode.value = " "
+                        } catch (e) {
+                            alert("An error occurred. Please try again.");
+                        }
+                    }
+                });
+            }
+</script>
+{% endblock %}

@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+
+
+<!-- Page Header Start -->
+<div class="container-fluid bg-secondary mb-5">
+  <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+      <h1 class="font-weight-semi-bold text-uppercase mb-3">Shopping Cart</h1>
+      <div class="d-inline-flex">
+          <p class="m-0"><a href="">Home</a></p>
+          <p class="m-0 px-2">-</p>
+          <p class="m-0">Shopping Cart</p>
+      </div>
+  </div>
+</div>
+<!-- Page Header End -->
+  
+{% for msg in messages %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+             {% if msg.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              {% else %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+              {% endif %}
+                {{ msg }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+  
+  <!-- Shopping Cart -->
+<div class="bg0 p-t-75 p-b-85">
+  <div class="container">
+      <div class="row">
+          <div class="col-lg-10 col-xl-7 m-lr-auto m-b-100">
+              <div class="m-l-25 m-r--38 m-lr-0-xl">
+                  <div class="table-responsive">
+                      <table class="table table-striped">
+                          <thead>
+                              <tr>
+                                  <th>Image</th>
+                                  <th>Name</th>
+                                  <th>Size</th>
+                                  <th>Price</th>
+                                  <th>Quantity</th>
+                                  <th>Actions</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            {% for cart_item in cart_items %}
+                            <tr>
+                                <td>
+                                    <div class="how-itemcart1">
+                                        <img src="{{ cart_item.product.productimage_set.first.image.url }}" alt="Product Image" style="height: 60px; width: 60px;">
+                                    </div>
+                                </td>
+                                <td>{{ cart_item.product.product.name }}</td>
+                                <td>{{ cart_item.product.size }}</td>
+                                {% if cart_item.product.discount_price %}
+                                <td> ₹ {{ cart_item.product.discount_price }}</td>
+                                {% else %}
+                                <td id="price{{ cart_item.id }}"> ₹ {{ cart_item.product.price }}</td>
+                                {% endif %}
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn btn-sm btn-light" onclick="decreaseQuantity('{{ cart_item.id }}');">-</button>
+                                        <input type="number" class="form-control quantity-input" id="qty{{ cart_item.id }}" step="1" min="1" max="300" name="quantity" value="{{ cart_item.quandity }}" onchange="updateQuantity('{{ cart_item.id }}', this.value);">
+                                        <button class="btn btn-sm btn-light" onclick="increaseQuantity('{{ cart_item.id }}','{{ cart_item.product.stock }}');">+</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <form method="POST" action="{% url 'remove-cart' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="item_id" value="{{ cart_item.id }}">
+                                        <button type="submit" class="btn btn-sm btn-primary">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        
+                      </table>
+                  </div>
+                  {% if user_cart.coupon %}
+                  <form class="form-inline d-flex align-items-center">
+                    {% csrf_token %}
+                    <div class="form-group mr-5">
+                      <label for="coupon">Available Coupons:</label>
+                      <div class="d-flex align-items-center">
+                        
+                          <input type="text" class="form-control" id="coupon" placeholder="{{user_cart.coupon}}" name="coupon" required>
+                        
+                        <a href="{% url 'remove-coupon' %}" class="btn btn-primary m-1">Remove</a>
+                        
+                        
+                       
+                      </div>
+                    </div>
+                  </form>
+                  {% else %}
+            <form method="post" class="form-inline d-flex align-items-center" action="{% url 'cart' %}">
+              {% csrf_token %}
+              <div class="form-group mr-5">
+                <label for="coupon">Available Coupons:</label>
+                <div class="d-flex align-items-center">
+                  
+                    <input type="text" class="form-control" id="coupon" name="coupon" required>
+                  
+                  <button type="submit" class="btn btn-primary" style="height: 35px; width: 75px;">Apply</button>
+                  
+                </div>
+              </div>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+  
+        <div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+          <div class="border rounded p-4">
+            <h4 class="mtext-109 cl2 mb-4">Cart Totals</h4>
+            <div class="d-flex justify-content-between mb-3">
+              <span class="stext-110 cl2">Sub total:</span>
+              <span class="mtext-110 cl2" id="tprice">₹{{ total_price }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+
+
+
+<span class="stext-110 cl2">Discount :</span>
+              <span class="mtext-110 cl2" id="dprice" style="color: darkgreen;">-₹{{total_discount}}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+              <span class="stext-110 cl2">coupon discount:</span>
+              <span class="mtext-110 cl2" id="cprice"> ₹{{coupon_price}}</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between">
+              <span class="stext-101 cl2" style="font-size: larger;">Total Amount:</span>
+              <span class="mtext-110 cl2" id="tamount" style="color: darkgreen;"> ₹{{ total_amount }}</span>
+            </div>
+            <div class="mt-4">
+              {% if total_price == 0 %}
+              <a href="{% url 'home' %}" class="btn btn-lg btn-primary btn-block">Shop more</a>
+              {% else %}
+              <a href="{% url 'order-address' %}" class="btn btn-lg btn-primary btn-block" >Proceed to Checkout</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+  function updateQuantity(productId, quantity) {
+    $.ajax({
+      type: "POST",
+      url: "/update_quantity",  // Replace with the actual URL of your Django view
+      headers: { "X-CSRFToken": "{{ csrf_token }}" }, // Add this line to include the CSRF token
+      data: {
+          product_id: productId,
+          quantity: quantity
+        },
+        dataType: 'json',  // Expect JSON response from the server
+        success: function(response) {
+            // console.log(response.price);
+            // console.log(response.quantity);
+            if (response.success) {
+                // Update the displayed quantity and price
+                $("#price-" + productId).text(response.price);
+                $("#tprice").text(response.total_price);
+                $("#dprice").text(response.total_discount);
+                $("#tamount").text(response.total_amount);
+                $("#cprice").text(response.coupon_price);
+
+                // console.log("Quantity updated successfully!");
+                // location.reload()
+        } else {
+          console.log("Quantity update failed:", response.message);
+        }
+      },
+      error: function(xhr, errmsg, err) {
+        console.log("Error updating quantity:", errmsg);
+      }
+    });
+}
+
+function decreaseQuantity(productId) {
+  var inputField = $("#qty" + productId);
+  var currentValue = parseInt(inputField.val());
+  if (currentValue > 1) {
+    
+    var newValue = currentValue - 1;
+    inputField.val(newValue);
+    console.log(newValue)
+    updateQuantity(productId, newValue);
+  }
+}
+
+function increaseQuantity(productId, stock) {
+    var effect = document.getElementById('qty' + productId);
+    var qty = parseInt(effect.value);
+    console.log(effect);
+    if (!isNaN(qty) && qty < stock && qty < 10) {
+      qty++;
+      effect.value = qty;
+      console.log(qty)
+      updateQuantity(productId, qty);
+    } else {
+      alert("Maximum stock limit reached."); // Display a message when the maximum stock limit is reached
+    }
+  }
+
+</script> 
+
+
+
+{% endblock %}

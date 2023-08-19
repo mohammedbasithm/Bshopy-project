@@ -1,0 +1,59 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% block link%}
+<link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock%}
+{% block content %}
+<div class="container-fluid mt-4">
+  <h2 class="mb-4">All Orders</h2>
+  <hr>
+  <div class="table-responsive">
+    <table id="userListTable" class="table table-bordered table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Order ID</th>
+          <th scope="col">User</th>
+          <th scope="col">Total Price</th>
+          <th scope="col">Payment Status</th>
+          <th scope="col">Payment Method</th>
+          <th scope="col">Order Date</th>
+          <th scope="col">Delivery Date</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.id }}</td>
+          <td>{{ order.user.username }}</td>
+          <td>{{ order.total_price }}</td>
+          <td>{{ order.payment_status }}</td>
+          <td>{{ order.payment_method }}</td>
+          <td>{{ order.order_date }}</td>
+          <td>{{ order.delivery_date }}</td>
+          <td class="d-flex justify-content-center">
+            <a href="{% url 'admin-order-view' order.id %}" class="btn btn-primary btn-sm">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block script%}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#userListTable').DataTable({
+            lengthMenu: [5, 10, 25, 50], // Set the page length options
+            pageLength: 10, // Set the default page length
+            ordering: true, // Enable sorting
+            searching: true, // Enable search functionality
+            paging: true, // Enable pagination
+            // Other DataTables options go here
+        });
+    });
+</script>
+{% endblock %}

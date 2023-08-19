@@ -1,0 +1,108 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% block content %}
+<h1>edit_product page</h1>
+
+<div class="container">
+    
+    <form method="post" enctype="multipart/form-data" >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="name">Product Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{products.name}}" required>
+                </div>
+                <div class="form-group">
+                    <label for="shortdescription">Short description</label>
+                    <input type="text" class="form-control" id="shortdescription" name="description" value="{{products.description}}" required>
+                </div>
+                
+                <!-- <div class="mb-3">
+                    <label for="dial_shape" class="form-label">Stock</label>
+                    <input type="number" class="form-control" id="stock" name="stock" value="{{ productt.stock }}">
+                </div> -->
+
+                <select class="form-select my-2" aria-label="Default select example" name="category" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
+                    <option selected>category</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id == products.category.id %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                
+                <select class="form-select" aria-label="Default select example" name="brand" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
+                    <option selected disabled>Brand</option>
+                    {% for brand in brands %}
+                        <option value="{{ brand.id }}" {% if brand.id == products.brand_name.id %}selected{% endif %}>{{ brand.name }}</option>
+                    {% endfor %}
+                </select>
+                
+                
+                
+                <!--<select class="form-select" aria-label="Default select example" name="size" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
+                    <option selected>size</option>
+                    {% for size in sizes %}
+                        <option value="{{ size.id }}" {% if size.id == products.productvariant_set.first.size.id %}selected{% endif %}>
+                            {{ size.size }}
+                        </option>
+                    {% endfor %}
+                </select>
+                
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" value="{{ products.productvariant_set.first.price }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input type="number" class="form-control" id="stock" name="stock" value="{{ products.productvariant_set.first.stock }}" required>
+                </div> -->
+                
+                <!-- <div class="form-group">
+                    <label for="images">Variant Images</label>
+                    <input type="file" class="form-control-file" id="images" onchange="previewImages(event, 'preview')" name="images" multiple required>
+                    <br>
+                    <div id="preview"> -->
+                        <!-- Display images selected for preview -->
+                    <!-- </div> -->
+                    <!-- {% for images in product_images %} -->
+                        <!-- Display saved images -->
+                        <!-- <img src="{{ images.image.url }}" alt="Product Image" width="100" height="100">
+                    {% endfor %}
+                </div>
+                 -->
+                
+                
+                
+                
+                
+        <button type="submit" class="btn btn-primary">SUBMIT</button>
+    </form>
+</div>
+<!-- <script>
+    function previewImages(event, previewId) {
+        var input = event.target;
+        var previewElement = document.getElementById(previewId);
+        previewElement.innerHTML = ''; // Clear any previous previews
+        
+        if (input.files && input.files.length > 0) {
+            for (var i = 0; i < input.files.length; i++) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.display = 'inline-block'; // Display images in a row
+                    img.style.maxWidth = '150px'; // Set the maximum width of each image
+                    img.style.marginTop = '10px';
+                    previewElement.appendChild(img);
+                };
+                
+                reader.readAsDataURL(input.files[i]);
+            }
+        }
+    }
+</script> -->
+
+{% endblock %}

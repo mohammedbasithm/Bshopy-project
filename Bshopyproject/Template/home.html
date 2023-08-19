@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<div id="header-carousel" class="carousel slide" data-ride="carousel">
+  <div class="carousel-inner">
+      <div class="carousel-item active" style="height: 410px;">
+          <img class="img-fluid" src="eshoper/img/carousel-1.jpg" alt="Image">
+          <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+              <div class="p-3" style="max-width: 700px;">
+                  <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
+                  <h3 class="display-4 text-white font-weight-semi-bold mb-4">Fashionable Dress</h3>
+                  <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
+              </div>
+          </div>
+      </div>
+      <div class="carousel-item" style="height: 410px;">
+          <img class="img-fluid" src="eshoper/img/carousel-2.jpg" alt="Image">
+          <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+              <div class="p-3" style="max-width: 700px;">
+                  <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
+                  <h3 class="display-4 text-white font-weight-semi-bold mb-4">Reasonable Price</h3>
+                  <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
+              </div>
+          </div>
+      </div>
+  </div>
+  <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
+      <div class="btn btn-dark" style="width: 45px; height: 45px;">
+          <span class="carousel-control-prev-icon mb-n2"></span>
+      </div>
+  </a>
+  <a class="carousel-control-next" href="#header-carousel" data-slide="next">
+      <div class="btn btn-dark" style="width: 45px; height: 45px;">
+          <span class="carousel-control-next-icon mb-n2"></span>
+      </div>
+  </a>
+</div>
+<!-- Featured Start -->
+<div class="container-fluid pt-5">
+  <div class="row px-xl-5 pb-3">
+      <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+          <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+              <h1 class="fa fa-check text-primary m-0 mr-3"></h1>
+              <h5 class="font-weight-semi-bold m-0">Quality Product</h5>
+          </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+          <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+              <h1 class="fa fa-shipping-fast text-primary m-0 mr-2"></h1>
+              <h5 class="font-weight-semi-bold m-0">Free Shipping</h5>
+          </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+          <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+              <h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
+              <h5 class="font-weight-semi-bold m-0">14-Day Return</h5>
+          </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+          <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+              <h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
+              <h5 class="font-weight-semi-bold m-0">24/7 Support</h5>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- Featured End -->
+
+<!-- Categories Start -->
+<div class="container-fluid pt-5">
+  <div class="row px-xl-5 pb-3">
+    {% for category in categories %}
+      <div class="col-lg-4 col-md-6 pb-1">
+          <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
+              <p class="text-right">15 Products</p>
+              <a href="{% url 'category' slug=category.slug %}" class="cat-img position-relative overflow-hidden mb-3">
+                  <img class="img-fluid" src="{{category.image.url}}" alt="">
+              </a>
+              <h5 class="font-weight-semi-bold m-0">{{category.name}}' Shoe</h5>
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+<!-- Categories End -->
+<!-- Products Start -->
+<div class="container-fluid pt-5">
+  <div class="text-center mb-4">
+      <h2 class="section-title px-5"><span class="px-2">Trandy Products</span></h2>
+  </div>
+  <div class="row px-xl-5 pb-3">
+      
+        {% for product in products %}
+          {% if product.productvariant_set.all %}
+            {% with random_variant=product.productvariant_set.all|random %}
+              {% if random_variant.productimage_set.exists %}
+                {% if product.is_active %}
+                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                  <div class="card product-item border-0 mb-4">
+                      <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                          <img class="img-fluid w-100" src="{{ random_variant.productimage_set.first.image.url }}" alt="">
+                      </div>
+                      <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                          <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
+                          <div class="d-flex justify-content-center">
+                              <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                          </div>
+                      </div>
+                      <div class="card-footer d-flex justify-content-between bg-light border">
+                          <a href="{% url 'productdetails' slug=random_variant.slug %}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                          <a onclick="addToCart('{{product.id}}')"  class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endif %}
+            {% endwith %}
+          {% endif %}
+        {% endfor %}
+      
+  </div>
+</div>
+<!-- Products End -->
+
+{% endblock %}
+{% block script %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+function addToCart(product_id) {
+                
+                // Make an AJAX POST request
+                $.ajax({
+                    type: "GET",
+                    url: "/get-variant/", // Replace with the actual URL of your Django view to apply the coupon
+                    //headers: { "X-CSRFToken": "{{ csrf_token }}" }, // Add this line to include the CSRF token
+                    data: { product_id: product_id },
+                    dataType: 'json',
+                    success: function(response) {
+                            // Access the variants array from the response
+                            //console.log(response)    
+                            var variants = response.variants;                            
+                            // Create an array to hold the size options
+                            var sizeOptions = [];
+
+                            // Iterate through the variants array
+                            for (var i = 0; i < variants.length; i++) {
+                                var variant = variants[i];
+                                var variantSize = variant.size;
+                                var variantId = variant.id;
+
+                                // Add each size to the sizeOptions array
+                                sizeOptions.push({
+                                    Id : variantId,
+                                    Size : variantSize
+                                });
+
+                                
+                            }
+
+                            // Create an array containing only the 'Size' values
+                            const sizeOptionsForInput = sizeOptions.map(option => option.Size);
+
+                            // Display the size options using SweetAlert
+                            Swal.fire({
+                                title: 'Select Size',
+                                input: 'radio',
+                                inputOptions: sizeOptionsForInput,
+                                showCancelButton: true,
+                                confirmButtonText: 'Select',
+                                cancelButtonText: 'Cancel',
+                                inputValidator: (value) => {
+                                    if (!value) {
+                                        return 'You must select a size';
+                                    }
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var selectedSize = result.value;
+                                    // Perform actions with the selectedSize
+
+                                    console.log('Selected Size:------', selectedSize);
+                                    console.log('Selected Variant Id:', sizeOptions[selectedSize].Id);
+                                    var variant_id = sizeOptions[selectedSize].Id
+                                    window.location.href = "/addcart/"+ variant_id + "/";
+                                    // Make an AJAX POST request                                    
+                                }
+                            });
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle the error if any
+                        //console.log(xhr.responseText);
+                        //alert("Coupon Code Not Found! Please try again.");
+                        try {
+                            var alert_msg = JSON.parse(xhr.responseText);
+                            //alert(alert_msg.error);
+                            //showModal(alert_msg.error);
+                            couponCode.value = " "
+                        } catch (e) {
+                            alert("An error occurred. Please try again.");
+                        }
+                    }
+                });
+            }
+</script>
+{% endblock %}

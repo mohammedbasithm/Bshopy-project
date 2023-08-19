@@ -1,0 +1,92 @@
+{% extends 'base.html'%}
+{% load static%}
+
+{% block link %}
+<link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+
+<style>
+    .no-orders-box {
+        border: 1px solid #ccc;
+        background-color: #f8f8f8;
+        padding: 20px;
+        text-align: center;
+        width: 300px; /* Set the width of the box */
+        margin: 0 auto; /* Center the box horizontally */
+        margin-bottom:30px;
+    }
+
+    .no-orders-box p {
+        color: red;
+        margin: 0;
+        font-weight: bold; /* Add text boldness */
+    }
+    
+</style>
+
+<div class="card-body">
+    <h5 class="product-list-title fw-semibold mb-4 text-center" style="color:white;">ORDERS LISTS</h5>
+    <div class="table-responsive">
+        {% if orders %}
+        <table id="userListTable" class="table" style="color:#0B1C39;font-family:'Josefin Sans', sans-serif;">
+            <thead>
+                <tr>
+                    <th scope="col">Order Id</th>
+                    <th scope="col">Order Status</th>
+                    <th scope="col">Payment Method</th>
+                    <th scope="col">Order Date</th>
+                    <th scope="col">Delivery Date</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.payment_status }}</td>
+                        <td>{{ order.payment_method }}</td>
+                        <td>{{ order.order_date }}</td>
+                        <td>{{ order.delivery_date }}</td>
+                        <td>
+                            <div class="btn">
+                                <a href="{% url 'order-view' order.id %}" class="btn btn-primary">View</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="no-orders-box">
+                <p>No orders found.</p>
+            </div>
+            
+            
+            {% endif %}
+    </div>
+</div>
+<div class="col-12 pb-1">
+    <nav aria-label="Category pagination">
+        <ul class="pagination justify-content-center">
+          {% if orders.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ orders.previous_page_number }}">Previous</a>
+          </li>
+          {% endif %}
+          
+          {% for num in orders.paginator.page_range %}
+          <li class="page-item {% if num == orders.number %}active{% endif %}">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          </li>
+          {% endfor %}
+          
+          {% if products.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ orders.next_page_number }}">Next</a>
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+</div>
+{% endblock %}

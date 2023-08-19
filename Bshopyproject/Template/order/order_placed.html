@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load static %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Display an image -->
+            <img src="https://i0.wp.com/www.melbournecurrencyexchange.com/wp-content/uploads/order-confirmed.png?resize=500%2C500&ssl=1" alt="Image" class="img-fluid" style="height: 500px; width: 500px;">
+        </div>
+        <div class="col-md-6 d-flex flex-column align-items-center justify-content-center mt-5">
+            <!-- Add a beautiful text for an empty cart -->
+            <h2 class="text-center">Your order has been placed!</h2>
+            <!-- Add the "Continue Shopping" button -->
+            <a href="{% url 'home' %}" class="btn btn-primary mt-3">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

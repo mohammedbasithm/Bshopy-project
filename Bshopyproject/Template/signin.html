@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block link %}
+
+    <style>
+        .password-toggle-icon {
+            position: absolute;
+            right: 75px;
+            top: 47%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+
+    <section class=" gradient-custom">
+        <div class="container py-5 ">
+          <div class="row d-flex justify-content-center align-items-center ">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+              <div class="card breadcrumb text-dark" style="border-radius: 1rem;">
+                <div class="card-body p-5 text-center">
+                  {% if messages %}
+                    <div class="messages">
+                      {% for message in messages %}
+                        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'info' %}alert-info{% endif %}">
+                          {{ message }}
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                  <div class="mb-md-5 mt-md-4 pb-5">
+      
+                    <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                    <p class="text-dark-50 mb-5">Please enter your login and password!</p>
+                   
+                    <form action="{% url 'signin' %}" id="sigin" method="post">
+
+                      {% csrf_token %}
+      
+                    <div class="form-outline form-white mb-4">
+                      <input type="username" id="username" class="form-control form-control-lg" name="username"/>
+                      <label class="form-label" for="username">username</label>
+                    </div>
+      
+                    <div class="form-outline form-white mb-4">
+                      <input type="password" id="pass1" class="form-control form-control-lg" name="pass1"/>
+                      <i class="fas fa-eye password-toggle-icon" id="pass1-toggle" onclick="togglePasswordVisibility('pass1')"></i>
+                      <label class="form-label" for="pass1">Password</label>
+                    </div>
+      
+                    <p class="small mb-5 pb-lg-2"><a class="text-dark-50" href="{% url 'password-reset-request' %}">Forgot password?</a></p>
+      
+                    <button class="btn btn-primary btn-lg px-5" type="submit">Login</button>
+      
+                    </form>
+      
+                  </div>
+      
+                  <div>
+                    <p class="mb-0">Don't have an account? <a href="{% url 'signup'%}" class="text-dark-50 fw-bold">Sign Up</a>
+                    </p>
+                  </div>
+                
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    {%endblock%}
+    {% block script %}
+<script>
+  function togglePasswordVisibility(inputId) {
+      var passwordInput = document.getElementById(inputId);
+      var passToggle = document.getElementById(inputId + '-toggle');
+      if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          passToggle.classList.remove("fa-eye");
+          passToggle.classList.add("fa-eye-slash");
+      } else {
+          passwordInput.type = "password";
+          passToggle.classList.remove("fa-eye-slash");
+          passToggle.classList.add("fa-eye");
+      }
+  }
+</script>
+{% endblock %}

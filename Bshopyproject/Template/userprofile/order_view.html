@@ -1,0 +1,156 @@
+{% extends 'base.html'%}
+{% load static%}
+
+
+{% block body %}
+
+<style>
+    .address-box {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 15px;
+        background-color: #e4eeff;
+        
+    }
+    .inline-boxes {
+        display: flex;
+        justify-content: space-between;
+        background-color: #e4eeff;
+    }
+</style>
+<body>
+    
+
+<section style="background-color: #e4eeff; font-family: 'Josefin Sans', sans-serif;margin-top: 10px; margin-right: 10px; margin-left: 10px;">
+<div class="container" style="margin-bottom: 20px;">
+    
+    <h1 class="mt-4 ">Your orders</h1>
+    <hr>
+    
+   <div class="mt-4">
+    {% if order.order_status != 'Delivered' %}
+        {% if order.order_status != 'Returned' and order.order_status != 'Cancelled' %}
+            <form action="{% url 'order-cancel' order.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" {% if order.return_period_expired %}disabled{% endif %}>
+                    {% if order.order_status == "requested for return" %}
+                        Return in progress
+                    {% elif order.return_period_expired < current_date %}
+                        Return period has expired
+                    {% else %}
+                        Cancel
+                    {% endif %}
+                </button>
+            </form>
+        {% endif %}
+        
+    {% elif order.order_status == 'Delivered' %}
+        {% if order.return_period_expired > current_date %}
+        <form id="return-form" action="{% url 'order-return' order.id %}" method="post">
+            {% csrf_token %}
+            <button type="button" class="btn btn-danger" onclick="showReturnConfirmation()">
+                Return
+            </button>
+        </form>
+        {% else %}
+            <p class="text-danger">Return period has expired </p>
+        {% endif %}
+    {% endif %}
+</div>
+
+    
+   
+    <h2 class="mt-4">Order Products</h2>
+    <table class="table table-striped table-bordered mt-3">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Image</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for orders in order_item %}
+
+            
+            <tr>
+                <td>{{ orders.product }}</td>
+                <td><img src="{{ orders.product.productimage_set.first.image.url }}" alt="{{ orders.product.name }}" class="img-thumbnail" style="height:70px;width:70px;"></td>
+                
+                {% if orders.product.discount_price is None %}
+                <td>{{ orders.price  }}</td>
+                {% else %}
+                <td>{{ orders.product.discount_price  }}</td>
+                {% endif%}
+                <td>{{ orders.quantity }}</td>
+            </tr>
+            
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Div to display address and order details inline -->
+    <div class="inline-boxes mt-4">
+        <!-- Order details box -->
+        <div class="order-details">
+            <h2>Order Details</h2>
+            <p><strong>Order ID:</strong> {{ order.id }}</p>
+            <p><strong>Order Date:</strong>  {{ order.order_date }}</p>
+            {% if order.payment_status != 'CANCELLED' and order.payment_status != 'RETURNED' %}
+            <p><strong>Delivery Date:</strong> {{ order.delivery_date }}</p>
+            {% endif %}
+            <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+            <p><strong>Order status:</strong><span class="font-weight-bold  text-danger mx-2">{{ order.order_status }}</span></p>
+            <p><strong>Applied Coupons:</strong>{{ order.applied_coupon }}</p>
+            <p><strong>Total Price:</strong> {{ order.total_price }}</p>
+            
+            <!-- Submit button for processing the order -->
+            
+        </div>
+
+        <!-- Address box -->
+        <div class="address-box ml-4">
+            <h2>Order Address</h2>
+            <p><strong>Name:</strong> {{ order.address.first_name }} {{ order.address.last_name }}</p>
+            <p><strong>Email:</strong> {{ order.address.email }}</p>
+            <p><strong>Phone:</strong> {{ order.address.phone_number }}</p>
+            <p><strong>Address Line 1:</strong> {{ order.address.address_line1 }}</p>
+            {% if order.address.address_line2 %}
+            <p><strong>Address Line 2:</strong> {{ order.address.address_line2 }}</p>
+            {% endif %}
+            <p><strong>City:</strong> {{ order.address.city }}</p>
+            <p><strong>Zip Code:</strong> {{ order.address.post_code }}</p>
+            <p><strong>State:</strong> {{ order.address.state }}</p>
+            <p><strong>Country:</strong> {{ order.address.country }}</p>
+        </div>
+
+    </div>
+
+</div>
+</section>
+
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function showReturnConfirmation() {
+            Swal.fire({
+                title: 'Confirm Return',
+                text: 'Are you sure you want to proceed with the return?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, return it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('return-form').submit();
+                } else {
+                    Swal.fire('Return cancelled', '', 'info');
+                }
+            });
+        }
+    </script>
+{% endblock %}

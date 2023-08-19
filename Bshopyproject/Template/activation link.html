@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body %}
+<section class="h-100 gradient-form" style="margin-top: 120px;">
+    <div class="container justify-content-center py-4 mt-4">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-xl-6">
+                <div class="card text-black align-items-center" style="border: 1px solid #0B1C39; padding: 30px; background:white;">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card-body p-md-4 ">
+                                <div class="message-container">
+                                    <div class="verification-box ">
+                                        <h1>Verification Email Sent</h1>
+                                        <p>A verification link has been sent to your email address.</p>
+                                        <img class="verification-image" src="{% static 'images/email verification.jpg' %}" alt="Verification Image" style="height:40vh">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

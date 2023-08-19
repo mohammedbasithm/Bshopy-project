@@ -1,0 +1,116 @@
+
+<style>
+    /* Custom CSS */
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .sales-table th, .sales-table td {
+        text-align: center;
+        padding: 10px;
+    }
+    .sales-table thead th {
+        background-color: #f2f2f2;
+    }
+    .sales-table tbody tr:nth-child(odd) {
+        background-color: #f2f2f2;
+    }
+    .sales-table tbody tr:hover {
+        background-color: #f7f7f7;
+    }
+    .blue-table th,
+    .blue-table td {
+        padding: 8px;
+        text-align: left;
+    }
+    .blue-table th {
+        background-color: #3572b0;
+        color: #fff;
+    }
+    .large-button {
+        padding: 12px 40px;
+        font-size: 16px;
+        background-color: #3572b0;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .long-button {
+        width: 100%;
+    }
+</style>
+<div class="container" style="margin-top: 130px;font-family: 'Josefin Sans', sans-serif;">
+    <h1>Sales Report</h1>
+    <!-- Sales Overview -->
+    <table class="table sales-table">
+        <thead class="thead-light">
+            <tr>
+                <th>Period</th>
+                <th>Total Orders</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Today</td>
+                <td>{{ order_count_today }}</td>
+                <td>Rs : {{ total_price_today }}</td>
+            </tr>
+            <tr>
+                <td>Weekly</td>
+                <td>{{ order_count_week }}</td>
+                <td>Rs : {{ total_price_week }}</td>
+            </tr>
+            <tr>
+                <td>Monthly</td>
+                <td>{{ order_count_month }}</td>
+                <td>Rs : {{ total_price_month }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <!-- Top Selling Products -->
+    <table class="table blue-table">
+        <thead class="thead-light">
+            <tr>
+                <th>Period</th>
+                <th>Product Name</th>
+                <th>Quantity Sold</th>
+            </tr>
+        </thead>
+        <tbody>
+    <tr>
+        <td>Today</td>
+        {% if top_selling_variants_today %}
+            <td>{{ top_selling_variants_today.0.product_model_name }} - {{ top_selling_variants_today.0.productcolor_color }}</td>
+            <td>{{ top_selling_variants_today.0.total_quantity }}</td>
+        {% else %}
+            <td>No orders</td>
+            <td>0</td>
+        {% endif %}
+    </tr>
+    <tr>
+        <td>This Week</td>
+        {% if top_selling_variants_week %}
+            <td>{{ top_selling_variants_week.0.product_model_name }} - {{ top_selling_variants_week.0.productcolor_color }}</td>
+            <td>{{ top_selling_variants_week.0.total_quantity }}</td>
+        {% else %}
+            <td>No orders</td>
+            <td>0</td>
+        {% endif %}
+    </tr>
+    <tr>
+        <td>This Month</td>
+        {% if top_selling_variants_month %}
+            <td>{{ top_selling_variants_month.0.product_model_name }} - {{ top_selling_variants_month.0.productcolor_color }}</td>
+            <td>{{ top_selling_variants_month.0.total_quantity }}</td>
+        {% else %}
+            <td>No orders</td>
+            <td>0</td>
+        {% endif %}
+    </tr>
+    </tbody>
+
+    </table>
+</div>
