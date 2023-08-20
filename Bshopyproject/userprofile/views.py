@@ -42,10 +42,6 @@ def add_address(request):
         email=request.POST['email']
         phone_number=request.POST['phone']
 
-        # is_delivery_address=request.POST.get('is_delivery_address',False)=='true'
-        # if is_delivery_address:
-        #     UserAdress.objects.filter(user=request.user).update(is_delivery_address=False)
-
         address=UserAdress(
             user=request.user,
             first_name=first_name,
@@ -58,7 +54,6 @@ def add_address(request):
             city=city,
             state=state,
             country=country,
-            # is_delivery_address=is_delivery_address
         )
         address.save()
 
@@ -118,9 +113,7 @@ def no_address(request):
         email=request.POST['email']
         phone_number=request.POST['phone']
 
-        # is_delivery_address=request.POST.get('is_delivery_address',False)=='true'
-        # if is_delivery_address:
-        #     UserAdress.objects.filter(user=request.user).update(is_delivery_address=False)
+        
 
         address=UserAdress(
             user=request.user,
@@ -134,7 +127,7 @@ def no_address(request):
             city=city,
             state=state,
             country=country,
-            # is_delivery_address=is_delivery_address
+            
         )
         address.save()
 
@@ -158,7 +151,6 @@ def user_wallet(request):
         balance=user_wallet.balance
     else:
         balance=0
-    print(balance)
     context={
         'wallet':user_wallet,
         'transaction':transaction,

@@ -45,13 +45,13 @@ def check_out(request,adres_id):
                     
             if product.discount_price:
                 sale=product.discount_price*item.quandity
-                print(sale,product.discount_price)
+                
             else:
                 sale=product.price*item.quandity
-                print('------',sale)
+                
             total_amount+=sale
         total_discount=0
-        print('total_amount:',total_amount)
+        
         if cart.coupon and cart.coupon.coupon_price:
             coupon=cart.coupon
             total_discount=subtotal-(total_amount)
@@ -235,7 +235,7 @@ def online_payment_order(request, add_id):
                 
             total_amount+=sale
         total_discount=0
-        print('total_amount:',total_amount)
+        
         if cart.coupon and cart.coupon.coupon_price:
             coupon=cart.coupon
             total_discount=subtotal-(total_amount)
@@ -293,7 +293,7 @@ def order_view(request,order_id):
     orderr=Order.objects.get(id=order_id)
     order_item=OrderItem.objects.filter(order=orderr)
     current_date=timezone.now()
-    print(orderr.return_period_expired)
+    
     context={
         'order':orderr,
         'order_item':order_item,
@@ -331,7 +331,7 @@ def return_request(request, order_id):
     return redirect(request.META.get('HTTP_REFERER'))
 
 def pay_wallet(request,order_id):
-    print('hello-------')
+    
     user_addrss=get_object_or_404(UserAdress,id=order_id,user=request.user)
     cart=get_object_or_404(Cart,user=request.user)
 

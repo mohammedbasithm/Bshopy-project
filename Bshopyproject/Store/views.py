@@ -20,7 +20,7 @@ def category(request,slug):
     return render(request,'category.html',{'products':products,'category':categories})
 
 def productdetails(request, slug):
-    print(slug)
+    
     product_variant=ProductVariant.objects.get(slug=slug)
     # product_variant = get_object_or_404(ProductVariant, slug=slug)
     product = product_variant.product
@@ -79,11 +79,10 @@ def shop(request):
 
 def get_variant(request):
     if request.method == 'GET':
-        print("REACHED Get Variant")
+        
         product_id = request.GET.get('product_id')
         product_obj=Product.objects.get(id=product_id)
         product_variant=ProductVariant.objects.filter(product=product_obj)
-        print("REACHED Get Variant-------------")
         variant_list = []
         for variant in product_variant:
             variant_dict = {

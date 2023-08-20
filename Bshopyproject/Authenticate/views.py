@@ -91,7 +91,6 @@ def signin(request):
             otp_store = get_random_string(length=5, allowed_chars='0123456789')
             request.session['otp'] = otp_store
             request.session['user_pk'] = user.pk
-            print('Your otp:',otp_store)
 
 
             subject = "OTP Confirmations"
@@ -185,7 +184,6 @@ def verify_otp(request):
     if request.method == 'POST':
         otp = request.POST['otp']
         try:
-            print( otp)
             userprofile = UserProfile.objects.get(otp=otp, otp_expiry__gte=timezone.now())
         except UserProfile.DoesNotExist:
             return render(request, 'password_reset/verification_otp.html', {'error_message': 'Invalid OTP'})
