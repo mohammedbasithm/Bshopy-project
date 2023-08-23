@@ -13,6 +13,7 @@
       </div>
     {% endfor %}
   <div class="carousel-inner">
+    {% if banners %}
     {% for banner in banners %}
       <div class="carousel-item {%if forloop.first %}active{% endif %}" style="height: 410px;">
           <img class="img-fluid" src="{{banner.banner_image.url}}" alt="Image">
@@ -23,7 +24,7 @@
           </div>
       </div>
     {% endfor %}
-      
+    {% endif %} 
   </div>
   <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
       <div class="btn btn-dark" style="width: 45px; height: 45px;">
@@ -102,7 +103,7 @@
                           <img class="img-fluid w-100" src="{{ random_variant.productimage_set.first.image.url }}" alt="">
                       </div>
                       <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                          <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
+                          <h6 class="text-truncate mb-3">{{product.name}}</h6>
                           <div class="d-flex justify-content-center ">
                             {% if random_variant.discount_price %}
                             <h6>{{ random_variant.discount_price }}</h6>
