@@ -27,9 +27,8 @@ def productdetails(request, slug):
     images = ProductImage.objects.filter(variant=product_variant)
     
     # Fetch related products using the same category and excluding the current product
-    related_products = Product.objects.filter(category=product.category).exclude(slug=product.slug)[:4]
-    for i in related_products:
-        print('----',i.name)
+    related_products = Product.objects.filter(category=product.category, is_active=True).exclude(slug=product.slug)[:4]
+        
     return render(request, 'productdetails.html', {
         'product': product,
         'product_variant': product_variant,
