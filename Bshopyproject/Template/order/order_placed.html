@@ -1,7 +1,15 @@
 {% extends 'base.html' %}
 {% block body %}
 {% load static %}
-
+{% for msg in messages %}
+      <div>
+          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+          <script>
+              var r = "{{ msg }}"
+              swal("Hey", r, "success")
+          </script>
+      </div>
+{% endfor %}
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6">

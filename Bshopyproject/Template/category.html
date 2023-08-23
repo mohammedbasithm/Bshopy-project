@@ -1,52 +1,139 @@
 {% extends 'base.html'%}
 {% load static%}
 {% block body %}
-<style>
-    .card-img-top{
-      object-fit: cover;
-      height: 300px;
-      width: 100%;
-    }
-    
-</style>
-<div class="container mt-5">
-   
-    <h2 class="text-center mb-5">All Products </h2>
-    
-    <hr>
-    <div class="container mt-5">
-      <div class="row">
-          {% for product in products %}
-              {% if product.productvariant_set.all %}
-                  {% with random_variant=product.productvariant_set.all|random %}
-                      {% if random_variant.productimage_set.exists %}
-                        {% if product.is_active %}
-                          <div class="col-lg-4 col-md-6 col-sm-12 py-3">
-                              <div class="card">
-                                  <a href="{% url 'productdetails' slug=random_variant.slug %}">
-                                      <img src="{{ random_variant.productimage_set.first.image.url }}" alt="{{ product.name }}" class="card-img-top">
-                                  </a>
-                                  <div class="card-body">
-                                      <h5 class="card-title">{{ product.name }}</h5>
-                                      {% if random_variant.discount_price is none %}
-                                      <p class="card-text">₹{{ random_variant.price }}</p>
-                                      {% else %}
-                                      <p class="card-text">₹{{random_variant.discount_price}} <del>₹{{ random_variant.price }}</del><h5 class="text" style="font-size: medium; color: forestgreen;">{{random_variant.discount}}% off</h5></p>
-                                      <p class="card-text">  </p> 
-                                      {% endif %}                                      <!-- Display more details as needed -->
-                                  </div>
-                              </div>
-                          </div>
-                        {% endif %}
-                      {% endif %}
-                  {% endwith %}
-              {% endif %}
-          {% endfor %}
+    {% for msg in messages %}
+      <div>
+          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+          <script>
+              var r = "{{ msg }}"
+              swal("Hey", r, "success")
+          </script>
       </div>
-  </div>
-  
+    {% endfor %}
 
-</div>
+    <div class="container-fluid pt-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title px-5"><span class="px-2">{{category.name}}'s Shoes</span></h2>
+        </div>
+        <div class="row px-xl-5 pb-3">
+            
+              {% for product in products %}
+                {% if product.productvariant_set.all %}
+                  {% with random_variant=product.productvariant_set.all|random %}
+                    {% if random_variant.productimage_set.exists %}
+                      {% if product.is_active %}
+                      <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                        <div class="card product-item border-0 mb-4">
+                            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                <img class="img-fluid w-100" src="{{ random_variant.productimage_set.first.image.url }}" alt="">
+                            </div>
+                            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
+                                <div class="d-flex justify-content-center ">
+                                    {% if random_variant.discount_price %}
+                                    <h6>{{ random_variant.discount_price }}</h6>
+                                    <h6 class="text-muted ml-2"><del>{{ random_variant.price }}</del></h6>
+                                    <!-- <h5 class="text" style="font-size: medium; color: forestgreen;">{{ random_variant.discount }}% off</h5> -->
+                                    {% else %}
+                                    <h6 class="text-muted ml-2">{{ random_variant.price }}</h6>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between bg-light border">
+                                <a href="{% url 'productdetails' slug=random_variant.slug %}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                <a onclick="addToCart('{{product.id}}')"  class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                            </div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endif %}
+                  {% endwith %}
+                {% endif %}
+              {% endfor %}
+            
+        </div>
+      </div>
 
+{% endblock %}
+{% block script %}
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+function addToCart(product_id) {
+                
+                // Make an AJAX POST request
+                $.ajax({
+                    type: "GET",
+                    url: "/get-variant/", // Replace with the actual URL of your Django view to apply the coupon
+                    //headers: { "X-CSRFToken": "{{ csrf_token }}" }, // Add this line to include the CSRF token
+                    data: { product_id: product_id },
+                    dataType: 'json',
+                    success: function(response) {
+                            // Access the variants array from the response
+                            //console.log(response)    
+                            var variants = response.variants;                            
+                            // Create an array to hold the size options
+                            var sizeOptions = [];
+
+                            // Iterate through the variants array
+                            for (var i = 0; i < variants.length; i++) {
+                                var variant = variants[i];
+                                var variantSize = variant.size;
+                                var variantId = variant.id;
+
+                                // Add each size to the sizeOptions array
+                                sizeOptions.push({
+                                    Id : variantId,
+                                    Size : variantSize
+                                });
+
+                                
+                            }
+
+                            // Create an array containing only the 'Size' values
+                            const sizeOptionsForInput = sizeOptions.map(option => option.Size);
+
+                            // Display the size options using SweetAlert
+                            Swal.fire({
+                                title: 'Select Size',
+                                input: 'radio',
+                                inputOptions: sizeOptionsForInput,
+                                showCancelButton: true,
+                                confirmButtonText: 'Select',
+                                cancelButtonText: 'Cancel',
+                                inputValidator: (value) => {
+                                    if (!value) {
+                                        return 'You must select a size';
+                                    }
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var selectedSize = result.value;
+                                    // Perform actions with the selectedSize
+
+                                    console.log('Selected Size:------', selectedSize);
+                                    console.log('Selected Variant Id:', sizeOptions[selectedSize].Id);
+                                    var variant_id = sizeOptions[selectedSize].Id
+                                    window.location.href = "/addcart/"+ variant_id + "/";
+                                    // Make an AJAX POST request                                    
+                                }
+                            });
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle the error if any
+                        //console.log(xhr.responseText);
+                        //alert("Coupon Code Not Found! Please try again.");
+                        try {
+                            var alert_msg = JSON.parse(xhr.responseText);
+                            //alert(alert_msg.error);
+                            //showModal(alert_msg.error);
+                            couponCode.value = " "
+                        } catch (e) {
+                            alert("An error occurred. Please try again.");
+                        }
+                    }
+                });
+            }
+</script>
 {% endblock %}

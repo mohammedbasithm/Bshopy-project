@@ -2,8 +2,17 @@
 {% load static %}
 
 {% block body %}
-
+{% for msg in messages %}
+      <div>
+          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+          <script>
+              var r = "{{ msg }}"
+              swal("Hey", r, "success")
+          </script>
+      </div>
+    {% endfor %}
 <div class="container-fluid" style="margin-top: 30px; margin-bottom: 20px;">
+    {% if items %}
     <div class="container-fluid">
         <div class="card">
             <div class="card-body">
@@ -70,5 +79,17 @@
             </div>
         </div>
     </div>
+    {% else %}
+    <div class="card-body cart">
+        <div class="col-sm-12 empty-cart-cls text-center">
+            <img src="{% static 'images/empty-wishlist.png' %}"  class="img-fluid mb-4 mr-3">
+            <br>
+            <a href="{% url 'shop' %}" class="btn btn-primary cart-btn-transform m-3" data-abc="true">continue shopping</a>
+            
+        
+        </div>
+    </div>
+    
+    {% endif %}    
 </div>
 {% endblock %}

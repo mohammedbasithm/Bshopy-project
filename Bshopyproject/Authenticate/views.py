@@ -71,7 +71,7 @@ def activate(request,uidb64,token):
         user.is_active = True
         user.save()
         login(request,user)
-        return redirect('signin')
+        return redirect('home')
     else:
         return render(request,'activation_failed.html')
 

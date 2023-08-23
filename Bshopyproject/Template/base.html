@@ -24,6 +24,7 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{% static 'eshoper/css/style.css' %}" rel="stylesheet">
+    
     {% block link %}
     {% endblock %}
 </head>
@@ -172,26 +173,7 @@
                 <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>bshopyproject@gmail.com</p>
                 <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+91 8111 896 080</p>
             </div>
-            <div class="col-lg-8 col-md-12">
-                <div class="row">
-                    
-                    <div class="col-md-4 mb-5">
-                        <h5 class="font-weight-bold text-dark mb-4">Newsletter</h5>
-                        <form action="">
-                            <div class="form-group">
-                                <input type="text" class="form-control border-0 py-4" placeholder="Your Name" required="required" />
-                            </div>
-                            <div class="form-group">
-                                <input type="email" class="form-control border-0 py-4" placeholder="Your Email"
-                                    required="required" />
-                            </div>
-                            <div>
-                                <button class="btn btn-primary btn-block border-0 py-3" type="submit">Subscribe Now</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            
         </div>
         <div class="row border-top border-light mx-xl-5 py-4">
             <div class="col-md-6 px-xl-0 text-center text-md-right">
@@ -219,6 +201,9 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'eshoper/js/main.js' %}"></script>
+
+    
+
 </body>
 
 </html>

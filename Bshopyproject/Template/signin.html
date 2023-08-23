@@ -13,22 +13,21 @@
     </style>
 {% endblock %}
 {% block body %}
-
+  {% for msg in messages %}
+      <div>
+          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+          <script>
+              var r = "{{ msg }}"
+              swal("Hey", r, "success")
+          </script>
+      </div>
+    {% endfor %}
     <section class=" gradient-custom">
         <div class="container py-5 ">
           <div class="row d-flex justify-content-center align-items-center ">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
               <div class="card breadcrumb text-dark" style="border-radius: 1rem;">
                 <div class="card-body p-5 text-center">
-                  {% if messages %}
-                    <div class="messages">
-                      {% for message in messages %}
-                        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'info' %}alert-info{% endif %}">
-                          {{ message }}
-                        </div>
-                      {% endfor %}
-                    </div>
-                  {% endif %}
                   <div class="mb-md-5 mt-md-4 pb-5">
       
                     <h2 class="fw-bold mb-2 text-uppercase">Login</h2>

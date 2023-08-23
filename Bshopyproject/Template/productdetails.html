@@ -4,10 +4,10 @@
 {% block body %}
 <style>.zoomed-image {
     position: absolute;
-    top: 140%;
+    top: 165%;
     left: 70%;
     width: 65%;
-    height: 90%;
+    height: 95%;
     background-size: 200%;
     background-repeat: no-repeat;
     display: none;
@@ -17,20 +17,13 @@
 <!-- Page Header Start -->
 <div class="container-fluid bg-secondary mb-5">
     {% for msg in messages %}
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                     {% if msg.tags == 'error' %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                      {% else %}
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">
-                      {% endif %}
-                        {{ msg }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div>
+          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+          <script>
+              var r = "{{ msg }}"
+              swal("Hey", r, "success")
+          </script>
+      </div>
     {% endfor %}
     <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
         <h1 class="font-weight-semi-bold text-uppercase mb-3">Shop Detail</h1>
@@ -63,7 +56,7 @@
                 <a href="{% url 'add-wishlist' selected_variant.id %}">
                 <div class="position-absolute top-0 end-0 mt-3 me-3">
                    
-                    <button  class="btn btn-outline-primary btn-sm" onclick="addToWishlist()">
+                    <button  class="btn btn-outline-primary btn-sm">
                         <i class="fa fa-heart"></i> Add to Wishlist
                     </button>
                     
@@ -72,7 +65,6 @@
                  
             </div>
         </div>
-        <!-- <div class="col-lg-6 col-md-6 col-sm-12 d-flex justify-content-center align-content-center"> -->
         <div class="zoomed-image"></div> 
 
         <div class="col-lg-7 pb-5">
@@ -93,7 +85,7 @@
                 <h3 class="card-text">₹{{product_variant.discount_price}} <del>₹{{ product_variant.price }}</del><h3 class="text" style="font-size: medium; color: forestgreen;">{{product_variant.discount}}% off</h3></h3>
                 <p class="card-text">  </p> 
             {% endif %}
-            <p class="mb-4">Volup erat ipsum diam elitr rebum et dolor. Est nonumy elitr erat diam stet sit clita ea. Sanc invidunt ipsum et, labore clita lorem magna lorem ut. Erat lorem duo dolor no sea nonumy. Accus labore stet, est lorem sit diam sea et justo, amet at lorem et eirmod ipsum diam et rebum kasd rebum.</p>
+            
             
             <div class="d-flex mb-4">
                 <p class="text-dark font-weight-medium mb-0 mr-3">Size:</p>
@@ -109,40 +101,12 @@
             </div>
             
             <div class="d-flex align-items-center mb-4 pt-2">
-                <div class="input-group quantity mr-3" style="width: 130px;">
-                    <div class="input-group-btn">
-                        <button class="btn btn-primary btn-minus" >
-                        <i class="fa fa-minus"></i>
-                        </button>
-                    </div>
-                    <input type="text" class="form-control bg-secondary text-center" value="1">
-                    <div class="input-group-btn">
-                        <button class="btn btn-primary btn-plus">
-                            <i class="fa fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
+                
                 <a href="{% url 'add-cart' selected_variant.id %}">
                 <button class="btn btn-primary px-3" ><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
                 </a>
             </div>  
-            <div class="d-flex pt-2">
-                <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
-                <div class="d-inline-flex">
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-pinterest"></i>
-                    </a>
-                </div>
-            </div>
+            
         </div>
         
     </div>
@@ -156,8 +120,7 @@
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="tab-pane-1">
                     <h4 class="mb-3">Product Description</h4>
-                    <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.</p>
-                    <p>Dolore magna est eirmod sanctus dolor, amet diam et eirmod et ipsum. Amet dolore tempor consetetur sed lorem dolor sit lorem tempor. Gubergren amet amet labore sadipscing clita clita diam clita. Sea amet et sed ipsum lorem elitr et, amet et labore voluptua sit rebum. Ea erat sed et diam takimata sed justo. Magna takimata justo et amet magna et.</p>
+                    <p>{{product.description}}</p>
                 </div>
                 <div class="tab-pane fade" id="tab-pane-2">
                     <h4 class="mb-3">Additional Information</h4>
@@ -263,81 +226,32 @@
     <div class="row px-xl-5">
             <div class="col">
                 <div class="owl-carousel related-carousel">
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{% static 'images/men00.webp' %}" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{% static 'images/men00.webp' %}" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{% static 'images/men00.webp' %}" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{% static 'images/men00.webp' %}" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{% static 'images/men00.webp' %}" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
+                    {% for product in related_products %}
+                        {% if product.productvariant_set.all %}
+                            {% with random_variant=product.productvariant_set.all|random %}                                        
+                            {% if random_variant.productimage_set.exists %}
+                                <div class="card product-item border-0 mb-4">
+                                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                        <img class="img-fluid w-100" src="{{ random_variant.productimage_set.first.image.url }}" alt="">
+                                    </div>
+                                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                        <h6 class="text-truncate mb-3">{{product.name}}</h6>
+                                        <div class="d-flex justify-content-center">
+                                            <h6>₹{{random_variant.price}}</h6>{%if random_variant.discount_price %}<h6 class="text-muted ml-2"><del>₹{{random_variant.discount_price}}</del></h6>{% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card-footer d-flex justify-content-between bg-light border">
+                                        <a href="{% url 'productdetails' slug=random_variant.slug %}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                        <a onclick="addToCart('{{product.id}}')"  class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                                    </div>
+                                    
+                                </div>
+                                {% endif %}
+                            {% endif %}
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                   
                 </div>
             </div>
         </div>
@@ -375,13 +289,84 @@
       });
     });
 </script>
-<script>
-    function addToWishlist() {
-        // Add your JavaScript logic here to handle the "Add to Wishlist" action
-        // You can use AJAX requests or other methods to save the product to the wishlist
-        // For now, let's just display an alert
-        alert("Product added to wishlist!");
-    }
-</script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+function addToCart(product_id) {
+                
+                // Make an AJAX POST request
+                $.ajax({
+                    type: "GET",
+                    url: "/get-variant/", // Replace with the actual URL of your Django view to apply the coupon
+                    //headers: { "X-CSRFToken": "{{ csrf_token }}" }, // Add this line to include the CSRF token
+                    data: { product_id: product_id },
+                    dataType: 'json',
+                    success: function(response) {
+                            // Access the variants array from the response
+                            //console.log(response)    
+                            var variants = response.variants;                            
+                            // Create an array to hold the size options
+                            var sizeOptions = [];
+
+                            // Iterate through the variants array
+                            for (var i = 0; i < variants.length; i++) {
+                                var variant = variants[i];
+                                var variantSize = variant.size;
+                                var variantId = variant.id;
+
+                                // Add each size to the sizeOptions array
+                                sizeOptions.push({
+                                    Id : variantId,
+                                    Size : variantSize
+                                });
+
+                                variant         
+                            }
+
+                            // Create an array containing only the 'Size' values
+                            const sizeOptionsForInput = sizeOptions.map(option => option.Size);
+
+                            // Display the size options using SweetAlert
+                            Swal.fire({
+                                title: 'Select Size',
+                                input: 'radio',
+                                inputOptions: sizeOptionsForInput,
+                                showCancelButton: true,
+                                confirmButtonText: 'Select',
+                                cancelButtonText: 'Cancel',
+                                inputValidator: (value) => {
+                                    if (!value) {
+                                        return 'You must select a size';
+                                    }
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var selectedSize = result.value;
+                                    // Perform actions with the selectedSize
+
+                                    console.log('Selected Size:------', selectedSize);
+                                    console.log('Selected Variant Id:', sizeOptions[selectedSize].Id);
+                                    var variant_id = sizeOptions[selectedSize].Id
+                                    window.location.href = "/addcart/"+ variant_id + "/";
+                                    // Make an AJAX POST request                                    
+                                }
+                            });
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle the error if any
+                        //console.log(xhr.responseText);
+                        //alert("Coupon Code Not Found! Please try again.");
+                        try {
+                            var alert_msg = JSON.parse(xhr.responseText);
+                            //alert(alert_msg.error);
+                            //showModal(alert_msg.error);
+                            couponCode.value = " "
+                        } catch (e) {
+                            alert("An error occurred. Please try again.");
+                        }
+                    }
+                });
+            }
+</script>
 {% endblock %}

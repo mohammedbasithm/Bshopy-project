@@ -143,6 +143,10 @@ def add_to_wishlist(request, variant_id):
         # Check if the item already exists in the wishlist
         item, item_created = WishlistItem.objects.get_or_create(wishlist=wishlist, product=variant)
 
+
+        # Add a success message
+        messages.success(request, 'Item has been added to your wishlist.')
+        
         return HttpResponseRedirect(request.META['HTTP_REFERER'])
     return render(request,'signin.html')
 

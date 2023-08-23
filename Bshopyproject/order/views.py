@@ -9,8 +9,10 @@ import razorpay
 from django.conf import settings
 from django.http import JsonResponse
 from userprofile.models import Wallet,WalletTransaction
+from django.views.decorators.cache import cache_control
 
 # Create your views here.
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def check_out(request,adres_id):
     cart = get_object_or_404(Cart, user=request.user)
     cartitems = CartItems.objects.filter(cart = cart)
@@ -73,9 +75,9 @@ def check_out(request,adres_id):
 
         return render(request,'order/check_out.html',context)
     
-    return redirect('shop',0)
+    return redirect('shop')
  
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def place_order(request,order_id):
     user_addrss=get_object_or_404(UserAdress,id=order_id,user=request.user)
     cart=get_object_or_404(Cart,user=request.user)
@@ -145,9 +147,9 @@ def place_order(request,order_id):
         variant=item.product
         variant.stock-=item.quandity
         variant.save()
-    item.delete()
+        item.delete()
     return render(request,'order/order_placed.html')
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def initiate_payment(request):
     if request.method == 'POST':
         # Retrieve the total price and other details from the backend
@@ -204,7 +206,7 @@ def initiate_payment(request):
 
     # Return an error response if the request method is not POST
     return JsonResponse({'error': 'Invalid request method'})
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def online_payment_order(request, add_id):
     
     if request.method == 'POST':
@@ -278,7 +280,7 @@ def online_payment_order(request, add_id):
     else:
         # Handle invalid request method (GET, etc.)
         return JsonResponse({'error': 'Invalid request method'})
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def order_success(request):
     return render(request,'order/order_placed.html')
 from django.core.paginator import Paginator
@@ -300,7 +302,7 @@ def order_view(request,order_id):
         'current_date':current_date,
     }
     return render(request,'userprofile/order_view.html',context)
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def order_cancel(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     message = ""  # Initialize the message variable with an empty string
@@ -318,7 +320,7 @@ def order_cancel(request, order_id):
         
 
     return render(request, 'userprofile/order_view.html', {'order': order,'message': message})
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def return_request(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
@@ -329,7 +331,7 @@ def return_request(request, order_id):
         order.save()
 
     return redirect(request.META.get('HTTP_REFERER'))
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def pay_wallet(request,order_id):
     
     user_addrss=get_object_or_404(UserAdress,id=order_id,user=request.user)
@@ -420,81 +422,3 @@ def pay_wallet(request,order_id):
 
 
 
-#=======================================#
-    user_address = get_object_or_404(UserAddress, id=add_id, user=request.user)
-    cart = Cart.objects.get(user_id=request.user)
-    cart_items = cart.cartitem_set.all()
-    subtotal = cart_items.aggregate(subtotal=Sum(F('quantity') * F('product__price')))['subtotal'] or Decimal('0.00')
-    shipping_charge = Decimal('50') if subtotal < Decimal('1000') else Decimal('0.00')
-
-    applied_coupon_id = request.session.get('applied_coupon', {}).get('id')
-
-    discount_amount = Decimal('0.00')
-    coupon = None
-
-    if applied_coupon_id is not None:
-        try:
-            coupon = get_object_or_404(Coupon, id=applied_coupon_id)
-            discount_amount = Decimal(coupon.discount)
-        except Coupon.DoesNotExist:
-            coupon = None
-
-    total_price = subtotal + shipping_charge - discount_amount
-
-    out_of_stock_products = [item.product for item in cart_items if item.product.stock < item.quantity]
-    if out_of_stock_products:
-        error_message = "The following products are out of stock or not available in the requested quantity: "
-        error_message += ", ".join([f"{product.name} ({product.color})" for product in out_of_stock_products])
-        messages.error(request, error_message)
-        return redirect('checkout')
-    user_wallet = Wallet.objects.get(user=request.user)
-
-    if user_wallet.balance >= total_price:
-        user_wallet.balance -= total_price
-        user_wallet.save()
-
-    with transaction.atomic():
-        order = Order.objects.create(
-            user=request.user,
-            first_name=user_address.first_name,
-            last_name=user_address.last_name,
-            email=user_address.email,
-            phone_number=user_address.phone_number,
-            address_line_1=user_address.address_line_1,
-            address_line_2=user_address.address_line_2,
-            postal_code=user_address.postal_code,
-            city=user_address.city,
-            state=user_address.state,
-            country=user_address.country,
-            total_price=total_price,
-            payment_status='Paid',
-            payment_method='Wallet pay',
-            applied_coupon=coupon,
-            shipping_charge=shipping_charge,
-        )
-
-        for cart_item in cart_items:
-            OrderItem.objects.create(
-                order=order,
-                product=cart_item.product,
-                price=cart_item.price,
-                quantity=cart_item.quantity
-            )
-            variant = cart_item.product
-            variant.stock -= cart_item.quantity
-            variant.save()
-        transaction_type = 'Purchased'
-        WalletTransaction.objects.create(
-            wallet=user_wallet,
-            amount=total_price,
-            order_id=order,
-            transaction_type=transaction_type,
-        )
-        if coupon:
-            coupon_quantity_to_reduce = 1
-            if coupon.quantity >= coupon_quantity_to_reduce:
-                coupon.quantity -= coupon_quantity_to_reduce
-                coupon.save()
-        cart_items.delete()
-        request.session.pop('applied_coupon', None)
-    return redirect('order_success')

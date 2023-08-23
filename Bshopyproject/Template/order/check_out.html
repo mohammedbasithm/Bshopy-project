@@ -5,7 +5,15 @@
 
 <!-- Shopping Cart -->
 <br>
-
+{% for msg in messages %}
+      <div>
+          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+          <script>
+              var r = "{{ msg }}"
+              swal("Hey", r, "success")
+          </script>
+      </div>
+    {% endfor %}
 <form class="bg0 p-t-75 p-b-85">
     <div class="container">
         <div class="row">

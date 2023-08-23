@@ -1,7 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block body %}
-
+{% for msg in messages %}
+      <div>
+          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+          <script>
+              var r = "{{ msg }}"
+              swal("Hey", r, "success")
+          </script>
+      </div>
+{% endfor %}
  <!-- Page Header Start -->
  <div class="container-fluid bg-secondary mb-5">
     <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
@@ -18,11 +26,10 @@
 <div class="container-fluid pt-5">
     <div class="row px-xl-5">
         <!-- Shop Sidebar Start -->
-        <div class="col-lg-3 col-md-12">
-                <h5 class="font-weight-semi-bold mb-4">Filter </h5>
-                
+        <div class="col-lg-3 col-md-12">                
             <!-- Size Start -->
-            <div class="mb-5">
+            <div class="mb-5 sticky-top">
+                <h5 class="font-weight-semi-bold mb-4">Filter </h5>
                 <button class="btn btn-primary d-md-none" type="button" data-toggle="collapse" data-target="#filterOptions" aria-expanded="false" aria-controls="filterOptions">
                     Show Filters
                 </button>
@@ -108,11 +115,11 @@
                                         </div>
                                         <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                             <h6 class="text-truncate mb-3">{{ product.name }}</h6>
-                                            <div class="d-flex justify-content-center">
+                                            <div class="d-flex justify-content-center ">
                                                 {% if random_variant.discount_price %}
                                                 <h6>{{ random_variant.discount_price }}</h6>
-                                                <h6 class="text-muted ml-2"><del>{{ random_variant.price }}</del></h6><br>
-                                                <h5 class="text" style="font-size: medium; color: forestgreen;">{{ random_variant.discount }}% off</h5>
+                                                <h6 class="text-muted ml-2"><del>{{ random_variant.price }}</del></h6>
+                                                <!-- <h5 class="text" style="font-size: medium; color: forestgreen;">{{ random_variant.discount }}% off</h5> -->
                                                 {% else %}
                                                 <h6 class="text-muted ml-2">{{ random_variant.price }}</h6>
                                                 {% endif %}

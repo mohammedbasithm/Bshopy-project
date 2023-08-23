@@ -7,7 +7,15 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-
+  {% for msg in messages %}
+  <div>
+      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+      <script>
+          var r = "{{ msg }}"
+          swal("Hey", r, "success")
+      </script>
+  </div>
+{% endfor %}
 <div class="container">
   <div class="row justify-content-center mt-5">
     <div class="col-md-6">

@@ -8,6 +8,7 @@
   </div>
   <div class="row">
     {% for address in addresses %}
+    {% if address.is_active %}
     <div class="col-md-4 mb-4">
       <div class="card">
         <div class="card-body">
@@ -31,6 +32,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
     {% if forloop.counter|divisibleby:2 %}
   </div>
   <div class="row">

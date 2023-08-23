@@ -1,17 +1,19 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from .models import *
+from banner.models import Banner
 
 # Create your views here.
 def home(request):
     categories=Category.objects.all()
-    
-    products=Product.objects.all()
-
-    return render(request,'home.html',{'categories':categories,'products':products})
-
-def men(request):
-    return render(request,'men.html')
+    banner=Banner.objects.all()
+    products=Product.objects.all()[:8]
+    context={
+        'categories':categories,
+        'products':products,
+        'banners':banner,
+        }
+    return render(request,'home.html',context)
 
 def category(request,slug):
     categories = get_object_or_404(Category, slug=slug)
@@ -20,17 +22,20 @@ def category(request,slug):
     return render(request,'category.html',{'products':products,'category':categories})
 
 def productdetails(request, slug):
-    
-    product_variant=ProductVariant.objects.get(slug=slug)
-    # product_variant = get_object_or_404(ProductVariant, slug=slug)
+    product_variant = get_object_or_404(ProductVariant, slug=slug)
     product = product_variant.product
     images = ProductImage.objects.filter(variant=product_variant)
-
+    
+    # Fetch related products using the same category and excluding the current product
+    related_products = Product.objects.filter(category=product.category).exclude(slug=product.slug)[:4]
+    for i in related_products:
+        print('----',i.name)
     return render(request, 'productdetails.html', {
         'product': product,
         'product_variant': product_variant,
         'images': images,
-        'selected_variant': product_variant  # Add this line
+        'selected_variant': product_variant,  # Add this line
+        'related_products': related_products
     })
 from django.core.paginator import Paginator
 def shop(request):  

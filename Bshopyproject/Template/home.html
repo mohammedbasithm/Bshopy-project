@@ -3,27 +3,27 @@
 {% block body %}
 
 <div id="header-carousel" class="carousel slide" data-ride="carousel">
+    {% for msg in messages %}
+      <div>
+          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+          <script>
+              var r = "{{ msg }}"
+              swal("Hey", r, "success")
+          </script>
+      </div>
+    {% endfor %}
   <div class="carousel-inner">
-      <div class="carousel-item active" style="height: 410px;">
-          <img class="img-fluid" src="eshoper/img/carousel-1.jpg" alt="Image">
+    {% for banner in banners %}
+      <div class="carousel-item {%if forloop.first %}active{% endif %}" style="height: 410px;">
+          <img class="img-fluid" src="{{banner.banner_image.url}}" alt="Image">
           <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
               <div class="p-3" style="max-width: 700px;">
-                  <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
-                  <h3 class="display-4 text-white font-weight-semi-bold mb-4">Fashionable Dress</h3>
-                  <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
+                  
               </div>
           </div>
       </div>
-      <div class="carousel-item" style="height: 410px;">
-          <img class="img-fluid" src="eshoper/img/carousel-2.jpg" alt="Image">
-          <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-              <div class="p-3" style="max-width: 700px;">
-                  <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
-                  <h3 class="display-4 text-white font-weight-semi-bold mb-4">Reasonable Price</h3>
-                  <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
-              </div>
-          </div>
-      </div>
+    {% endfor %}
+      
   </div>
   <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
       <div class="btn btn-dark" style="width: 45px; height: 45px;">
@@ -103,9 +103,15 @@
                       </div>
                       <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                           <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                          <div class="d-flex justify-content-center">
-                              <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                          </div>
+                          <div class="d-flex justify-content-center ">
+                            {% if random_variant.discount_price %}
+                            <h6>{{ random_variant.discount_price }}</h6>
+                            <h6 class="text-muted ml-2"><del>{{ random_variant.price }}</del></h6>
+                            <!-- <h5 class="text" style="font-size: medium; color: forestgreen;">{{ random_variant.discount }}% off</h5> -->
+                            {% else %}
+                            <h6 class="text-muted ml-2">{{ random_variant.price }}</h6>
+                            {% endif %}
+                        </div>
                       </div>
                       <div class="card-footer d-flex justify-content-between bg-light border">
                           <a href="{% url 'productdetails' slug=random_variant.slug %}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
@@ -157,7 +163,7 @@ function addToCart(product_id) {
                                     Size : variantSize
                                 });
 
-                                
+                                variant         
                             }
 
                             // Create an array containing only the 'Size' values

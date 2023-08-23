@@ -11,6 +11,7 @@ from django.db.models import Sum,Q
 from django.db.models.functions import TruncDate
 from django.utils.timezone import now
 from userprofile.models import Wallet,WalletTransaction
+from banner.models import Banner
 # Create your views here.
 
 def adminhome(request):
@@ -298,6 +299,45 @@ def add_category(request):
             return redirect('category')
         
         return render(request,'adminside/add_category.html')
+    return redirect('signin')
+#banner list
+def banner_list(request):
+    if request.user.is_superuser:
+        banner=Banner.objects.all()
+        return render(request,'adminside/banner.html',{'banners':banner})
+    return redirect('signin')
+#add banner
+def add_banner(request):
+    if request.user.is_superuser:
+        if request.method=='POST':
+            banner_name=request.POST['banner_name']
+            image=request.FILES.get('image')
+
+            new_banner=Banner.objects.create(name=banner_name,banner_image=image)
+            new_banner.save()
+
+            return redirect('banner-list')
+        
+        return render(request,'adminside/add_banner.html')
+    return redirect('signin')
+#enable banner
+def enable_banner(request,banner_id):
+    if request.user.is_superuser:
+        banner=Banner.objects.get(id=banner_id)
+        banner.is_active=True
+        banner.save()
+        return redirect('banner-list')
+    return redirect('signin')
+#disable banner
+def disable_banner(request,banner_id):
+    if request.user.is_superuser:
+        banner=Product.objects.get(id=banner_id)
+        print(banner.is_active)
+        banner.is_active=False
+        banner.save()
+        print(banner.is_active)
+        print('hello')
+        return redirect('banner-list')
     return redirect('signin')
 def product_view(request,product_id):
     if request.user.is_superuser:

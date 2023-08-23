@@ -138,7 +138,8 @@ def no_address(request):
 def delete_address(request,address_id):
     try:
         user_address=UserAdress.objects.get(id=address_id)
-        user_address.delete()
+        user_address.is_active=False
+        user_address.save()
 
     except user_address.DoesNotExist:
         return HttpResponse('address not found.')
