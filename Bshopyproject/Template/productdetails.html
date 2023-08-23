@@ -230,6 +230,7 @@
                         {% if product.productvariant_set.all %}
                             {% with random_variant=product.productvariant_set.all|random %}                                        
                             {% if random_variant.productimage_set.exists %}
+                                {% if product.is_active %}
                                 <div class="card product-item border-0 mb-4">
                                     <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                                         <img class="img-fluid w-100" src="{{ random_variant.productimage_set.first.image.url }}" alt="">
@@ -246,6 +247,7 @@
                                     </div>
                                     
                                 </div>
+                                {% endif %}
                             {% endif %}
                             {% endwith %}
                         {% endif %}
