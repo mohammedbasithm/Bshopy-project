@@ -237,9 +237,13 @@
                                     </div>
                                     <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                         <h6 class="text-truncate mb-3">{{product.name}}</h6>
-                                        <div class="d-flex justify-content-center">
-                                            <h6>₹{{random_variant.price}}</h6>{%if random_variant.discount_price %}<h6 class="text-muted ml-2"><del>₹{{random_variant.discount_price}}</del></h6>{% endif %}
-                                        </div>
+                                        {% if random_variant.discount_price %}
+                                            <h6>{{ random_variant.discount_price }}</h6>
+                                            <h6 class="text-muted ml-2"><del>{{ random_variant.price }}</del></h6>
+                                        <!-- <h5 class="text" style="font-size: medium; color: forestgreen;">{{ random_variant.discount }}% off</h5> -->
+                                        {% else %}
+                                            <h6 class="text-muted ml-2">{{ random_variant.price }}</h6>
+                                        {% endif %}
                                     </div>
                                     <div class="card-footer d-flex justify-content-between bg-light border">
                                         <a href="{% url 'productdetails' slug=random_variant.slug %}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
