@@ -42,7 +42,14 @@ def shop(request):
     price = ProductVariant.objects.filter(product__in=products).all()
     categories = Category.objects.all()
     brands = Brands.objects.all() 
-
+    if request.method=='GET':
+        sort_option = request.GET.get('sort', 'latest')
+        if sort_option == 'latest':
+            products= Product.objects.all().order_by('-id')
+        elif sort_option == 'A-Z':
+            products = Product.objects.all().order_by('name')
+        elif sort_option == 'bestoffer':
+            products = Product.objects.filter(productvariant__discount__isnull=False).order_by('-productvariant__discount')
 
     if request.method=='POST':
         searched=request.POST['search']
@@ -69,7 +76,7 @@ def shop(request):
             products = products.filter(productvariant__price__range=(30000, 50000))
         #Add more price range options as needed
 
-    paginator = Paginator(products, 9)  # Display 9 categories per page
+    paginator = Paginator(products, 7)  # Display 9 categories per page
     page_number = request.GET.get('page')
     products_paginator = paginator.get_page(page_number)
     context = {
@@ -80,6 +87,18 @@ def shop(request):
     }
 
     return render(request, 'shop.html', context)
+# def item_list(request):
+#     sort_option = request.GET.get('sort', 'latest')  # Default to 'latest' sorting
+
+#     if sort_option == 'latest':
+#         items = ProductVariant.objects.all().order_by('-product__created_at')
+#     elif sort_option == 'A-Z':
+#         items = Product.objects.all().order_by('name')
+#     elif sort_option == 'bestoffer':
+#         items = ProductVariant.objects.filter(discount_price__isnull=False).order_by('discount_price')
+
+#     return render(request, 'shop.html', {'items': items})
+
 
 def get_variant(request):
     if request.method == 'GET':

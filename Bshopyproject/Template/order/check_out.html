@@ -200,10 +200,10 @@ document.getElementById("proceedBtn").addEventListener("click", function (e) {
       window.location.href = "{% url 'place-order' user_address.id %}";
       console.log("Cash on Delivery selected");
     } else if (paymentOption === "upi") {
-        console.log('era');
+        
       // Code for Razorpay
       initiateRazorpayPayment();
-      console.log("Pay Using Razorpay selected");
+      
     } else if (paymentOption === "wallet") {
       // Code for Pay Using Wallet\
       alert("Your Paying using wallet");

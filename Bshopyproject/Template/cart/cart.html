@@ -63,7 +63,7 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <button class="btn btn-sm btn-light" onclick="decreaseQuantity('{{ cart_item.id }}');">-</button>
-                                        <input type="number" class="form-control quantity-input" id="qty{{ cart_item.id }}" step="1" min="1" max="300" name="quantity" value="{{ cart_item.quandity }}" onchange="updateQuantity('{{ cart_item.id }}', this.value);">
+                                        <input disabled type="number" class="form-control quantity-input" id="qty{{ cart_item.id }}" step="1" min="1" max="300" name="quantity" value="{{ cart_item.quandity }}" onchange="updateQuantity('{{ cart_item.id }}', this.value);">
                                         <button class="btn btn-sm btn-light" onclick="increaseQuantity('{{ cart_item.id }}','{{ cart_item.product.stock }}');">+</button>
                                     </div>
                                 </td>
