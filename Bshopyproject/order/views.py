@@ -252,7 +252,7 @@ def online_payment_order(request, add_id):
             address=user_address,
             total_price=total_price,
             payment_status='Paid',
-            payment_method='RAZORPAY',
+            payment_method='razorpay',
             order_status='Ordered',
             order_date=timezone.now(),
             razor_pay_payment_id=payment_id,
@@ -304,22 +304,38 @@ def order_view(request,order_id):
     return render(request,'userprofile/order_view.html',context)
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def order_cancel(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    message = ""  # Initialize the message variable with an empty string
-
-    if order.payment_status != 'CANCELLED':
+    order = get_object_or_404(Order, id=order_id)    
+    if order.order_status != 'Cancelled':
+        if order.payment_method in ['razorpay', 'Wallet pay']:
+            user_wallet = Wallet.objects.get(user=request.user)
+            # Refund the amount to the user's wallet
+            refund_amount = order.total_price  # Assuming you want to refund the full amount
+            user_wallet.balance += Decimal(refund_amount)
+            user_wallet.save()
+            transaction_type = 'Cancelled'
+            WalletTransaction.objects.create(
+                wallet=user_wallet,
+                amount=refund_amount,
+                order_id=order,
+                transaction_type=transaction_type,
+            )
+        if order.payment_status == 'Pending':
+            order.payment_status='No payment'
+        else:
+            order.payment_status='Refunded'
+        order.order_status='Cancelled'
+        order.cancelled_date=timezone.now()
+        order.save()
+        
         order_items = OrderItem.objects.filter(order=order)
         for item in order_items:
             variant = item.product
             variant.stock += item.quantity
             variant.save()
 
-        order.payment_status = 'CANCELLED'
-        order.save()
-        message = "Order has been cancelled successfully."
         
+    return redirect(request.META.get('HTTP_REFERER'))
 
-    return render(request, 'userprofile/order_view.html', {'order': order,'message': message})
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def return_request(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -373,7 +389,7 @@ def pay_wallet(request,order_id):
         total_price=total_price,
         payment_status='pending',
         order_status='Ordered',
-        payment_method='Wallet',
+        payment_method='Wallet pay',
         return_period_expired=timezone.now()+timedelta(days=5)
 
     )

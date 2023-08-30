@@ -32,7 +32,7 @@
         {% if order.order_status != 'Returned' and order.order_status != 'Cancelled' %}
             <form action="{% url 'order-cancel' order.id %}" method="post">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger" {% if order.return_period_expired %}disabled{% endif %}>
+                <button type="submit" class="btn btn-danger" {% if order.return_period_expired < current_date%}disabled{% endif %}>
                     {% if order.order_status == "requested for return" %}
                         Return in progress
                     {% elif order.return_period_expired < current_date %}
