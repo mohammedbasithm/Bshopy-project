@@ -22,6 +22,7 @@
                 </thead>
                 <tbody>
                 {% for user in users %}
+                    {% if not user.is_superuser %}
                     <tr>
                         <th scope="row">{{ forloop.counter }}</th>
                         <td>{{ user.username }}</td>
@@ -37,6 +38,7 @@
                             <a href="{% url 'delete_user' user.id %}" class="btn btn-outline-dark m-2">Delete</a>
                         </td>
                     </tr>
+                    {%endif%}
                 {% endfor %}
                 </tbody>
             </table>

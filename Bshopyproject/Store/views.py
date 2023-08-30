@@ -50,10 +50,12 @@ def shop(request):
             products = Product.objects.all().order_by('name')
         elif sort_option == 'bestoffer':
             products = Product.objects.filter(productvariant__discount__isnull=False).order_by('-productvariant__discount')
-
+    searched=None
+    count=0
     if request.method=='POST':
         searched=request.POST['search']
         products=Product.objects.filter(name__icontains=searched)
+        count=products.count()
     if request.method == "GET":
         # Handling filters from the request
         category_filter = request.GET.get('categoryFilter')
@@ -68,12 +70,12 @@ def shop(request):
             products = products.filter(brand_name=brand_filter)
 
          # Apply other filters based on the 'price_filter' value as needed
-        if price_filter == 'under50':
+        if price_filter == 'under 5000':
             products = products.filter(productvariant__price__lt=5000)
-        elif price_filter == '50to100':
-            products = products.filter(productvariant__price__range=(5000, 30000))
-        elif price_filter == '100to200':
-            products = products.filter(productvariant__price__range=(30000, 50000))
+        elif price_filter == '5000 to 10000':
+            products = products.filter(productvariant__price__range=(5000, 10000))
+        elif price_filter == '10000 to 20000':
+            products = products.filter(productvariant__price__range=(10000, 20000))
         #Add more price range options as needed
 
     paginator = Paginator(products, 7)  # Display 9 categories per page
@@ -84,20 +86,11 @@ def shop(request):
         "price": price,  # Add price to the context for the template
         'categories': categories,
         'brands': brands,
+        'search':searched,
+        'count':count,
     }
 
     return render(request, 'shop.html', context)
-# def item_list(request):
-#     sort_option = request.GET.get('sort', 'latest')  # Default to 'latest' sorting
-
-#     if sort_option == 'latest':
-#         items = ProductVariant.objects.all().order_by('-product__created_at')
-#     elif sort_option == 'A-Z':
-#         items = Product.objects.all().order_by('name')
-#     elif sort_option == 'bestoffer':
-#         items = ProductVariant.objects.filter(discount_price__isnull=False).order_by('discount_price')
-
-#     return render(request, 'shop.html', {'items': items})
 
 
 def get_variant(request):

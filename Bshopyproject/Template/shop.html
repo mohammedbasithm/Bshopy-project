@@ -22,6 +22,9 @@
     </div>
 </div>
 <!-- Page Header End -->
+{%if search%}
+<h3 class="text-center">showing "{{count}}" results for "{{search}}"</h3>
+{% endif %}
 <!-- Shop Start -->
 <div class="container-fluid pt-5">
     <div class="row px-xl-5">
@@ -59,9 +62,9 @@
                         <label for="priceFilter">Price:</label>
                         <select class="form-control" name="priceFilter">
                             <option value="all">All</option>
-                            <option value="under50">Under 5000</option>
-                            <option value="50to100">5000 to 30000</option>
-                            <option value="100to200">30000 to 50000</option>
+                            <option value="under 5000">Under 5000</option>
+                            <option value="5000 to 10000">5000 to 10000</option>
+                            <option value="10000 to 20000">10000 to 20000</option>
                             <!-- Add more price range options as needed -->
                         </select>
                     </div>
@@ -80,17 +83,8 @@
             <div class="row pb-3">
                 <div class="col-12 pb-1">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <form action="">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search by name">
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg-transparent text-primary">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="dropdown ml-4">
+                        
+                        <div class="dropdown ml-4 ">
                             <button class="btn border dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
                                     aria-expanded="false">
                                 Sort by

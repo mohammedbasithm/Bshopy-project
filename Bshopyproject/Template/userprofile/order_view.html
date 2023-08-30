@@ -19,7 +19,15 @@
     }
 </style>
 <body>
-    
+{% for msg in messages %}
+    <div>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+            var r = "{{ msg }}"
+            swal("Hey", r, "success")
+        </script>
+    </div>
+{% endfor %}
 
 <section style="background-color: #e4eeff; font-family: 'Josefin Sans', sans-serif;margin-top: 10px; margin-right: 10px; margin-left: 10px;">
 <div class="container" style="margin-bottom: 20px;">

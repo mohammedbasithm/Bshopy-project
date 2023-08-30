@@ -95,7 +95,7 @@
 
     <!-- jQuery Library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
 
 
@@ -118,9 +118,11 @@
                 "image": "{%static 'user/img/logo1.png'%}",
                 "order_id": response.order_id,                 
                 "handler": function (response) {
-                    alert(response.razorpay_payment_id);
-                    alert(response.razorpay_order_id);
-                    alert(response.razorpay_signature);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',   
+                        text: 'Order placed successfully!',
+                    });
                
                     var paymentId = response.razorpay_payment_id;
                     var orderId = response.razorpay_order_id;
@@ -137,15 +139,17 @@
                         },
                         success: function(response) {
                             var id = response.orderId
-                            console.log("Order ID:", id);
                             window.location.href ="{% url 'order-success' %}";
                                                     
-                            console.log("Order placed successfully!");
                         },
                         error: function(xhr, status, error) {
-                            // Handle the error if any
-                            console.log(xhr.responseText);
-                            alert("Error placing the order. Please try again.");
+                            
+                            // Replace alert("Error placing the order. Please try again."); with SweetAlert error modal
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Error placing the order. Please try again.',
+                            });
                         }
                     });
                
@@ -184,7 +188,11 @@
         error: function(xhr, status, error) {
             // Handle the error if any
             console.log(xhr.responseText);
-            alert("Error initiating payment. Please try again.");
+            Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error initiating payment. Please try again.',
+        });
         }
     });
 
@@ -198,7 +206,6 @@ document.getElementById("proceedBtn").addEventListener("click", function (e) {
     if (paymentOption === "cod") {
       // Code for Cash on Delivery
       window.location.href = "{% url 'place-order' user_address.id %}";
-      console.log("Cash on Delivery selected");
     } else if (paymentOption === "upi") {
         
       // Code for Razorpay
@@ -206,9 +213,12 @@ document.getElementById("proceedBtn").addEventListener("click", function (e) {
       
     } else if (paymentOption === "wallet") {
       // Code for Pay Using Wallet\
-      alert("Your Paying using wallet");
+      Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Your Paying using wallet.',
+        });
       window.location.href = "{% url 'pay-wallet' user_address.id %}";
-      console.log("Pay Using Wallet selected");
     }
   });
 </script>
