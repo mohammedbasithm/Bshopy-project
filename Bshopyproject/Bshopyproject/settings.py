@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-k_*f*^kfcn9t7$gva^1t9^3tp=efz#&v7*vhm5$#k2ii@3fagp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.48.195.72','0.0.0.0','localhost']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -51,22 +51,22 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
+    # "corsheaders.middleware.CorsMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://13.48.195.72",
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://13.48.195.72",
 
-]
+# ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
 
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'Bshopyproject.urls'
 

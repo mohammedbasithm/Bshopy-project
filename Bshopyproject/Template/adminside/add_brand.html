@@ -10,11 +10,11 @@
                 <h5 class="card-title fw-semibold mb-4">ADD BRAND</h5>
                 <div class="card">
                     <div class="card-body">
-                        <form action="{% url 'add-brand' %}" method="post" enctype="multipart/form-data">
+                        <form id="BrandId" action="{% url 'add-brand' %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="id_name" class="form-label">Brand name</label>
-                                <input type="text" class="form-control" id="id_name" name="name">
+                                <input type="text" class="form-control" id="BrandName" name="name">
                             </div>
                             <button type="submit" class="btn btn-primary">SUBMIT</button>
                         </form>
@@ -26,4 +26,37 @@
 </div>
 
 
+{% endblock %}
+{% block script%}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    document.getElementById("BrandId").addEventListener("submit",(e)=>{
+      e.preventDefault()
+      const BrandName = document.getElementById("BrandName").value;
+
+    if (!isValidBrandName(BrandName)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid BrandName',
+            text: 'Invalid BrandName. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+        });
+    }else {
+          e.target.submit();
+        }
+    })
+
+
+    function validate() {
+        
+    }
+
+    function isValidBrandName(BrandName) {
+        // Regular expression to check for letters only and no spaces
+        const lettersPattern = /^[A-Za-z]+$/;
+
+        return lettersPattern.test(BrandName);
+    }
+   
+  </script>
 {% endblock %}

@@ -52,5 +52,6 @@ urlpatterns = [
     path('add-banner',views.add_banner,name='add-banner'),
     path('enable-banner/<int:banner_id>',views.enable_banner,name='enable-banner'),
     path('disable-banner/<int:banner_id>',views.disable_banner,name='disable-banner'),
+    path('edit-banner/<int:banner_id>',views.edit_banner,name='edit-banner'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

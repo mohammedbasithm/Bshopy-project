@@ -2,7 +2,9 @@
 
 {% load static %}
 {% block body %}
-<style>.zoomed-image {
+
+<style>
+.zoomed-image {
     position: absolute;
     top: 150%;
     left: 70%;
@@ -41,9 +43,10 @@
         <div class="col-lg-5 pb-5">
             <div id="product-carousel" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner border">
+                    
                     {% for image in images %}
                     <div class="product-image carousel-item {% if forloop.first %}active{% endif %}">
-                        <img class="w-100 h-100" src="{{ image.image.url }}" alt="Image">
+                        <img class="w-100 h-100 " src="{{ image.image.url }}" alt="Image">
                     </div>
                     {% endfor %}
                 </div>
@@ -173,6 +176,7 @@
     const zoomedImages = document.querySelectorAll(".zoomed-image");
   
     productImages.forEach((productImage, index) => {
+        index=0;
       productImage.addEventListener("mouseover", function () {
         // Display the zoomed image when hovering over the product image
         zoomedImages[index].style.backgroundImage = `url(${productImage.src})`;

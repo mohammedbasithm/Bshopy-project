@@ -3,8 +3,10 @@ from .models import *
 from order.models import * 
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.cache import cache_control
 
 # Create your views here.
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def user_profile(request):
     user=request.user
     try:
@@ -16,6 +18,8 @@ def user_profile(request):
         'addresses':addresses
     }
     return render(request,'userprofile/userprofile.html',context)
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def show_address(request):
     user=request.user
     try:
@@ -29,6 +33,7 @@ def show_address(request):
     }
     return render(request,'userprofile/show_address.html',context)
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def add_address(request):
     if request.method=='POST':
         first_name=request.POST['fname']
@@ -60,6 +65,8 @@ def add_address(request):
         return redirect('show-address')
     
     return render(request,'userprofile/add_address.html')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def edit_address(request,address_id):
     address=UserAdress.objects.get(id=address_id)
     if request.method=='POST':
@@ -89,6 +96,8 @@ def edit_address(request,address_id):
         address.save()
         return redirect('order-address')
     return render(request,'order/edit_address.html',{'address':address})
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def order_address(request):
     # if request.user.is_authentcated:
         user=request.user
@@ -100,6 +109,7 @@ def order_address(request):
             return HttpResponse('something went wrong.')
         return render(request,'order/oreder_address.html',{'addresses':addresses})
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def no_address(request):
     if request.method=='POST':
         first_name=request.POST['fname']
@@ -135,6 +145,7 @@ def no_address(request):
     
     return render(request,'order/add_order_address.html')
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def delete_address(request,address_id):
     try:
         user_address=UserAdress.objects.get(id=address_id)
@@ -145,6 +156,7 @@ def delete_address(request,address_id):
         return HttpResponse('address not found.')
     return redirect('show-address')
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def user_wallet(request):
     user_wallet=Wallet.objects.filter(user=request.user).first()
     transaction=WalletTransaction.objects.filter(wallet=user_wallet)
@@ -158,6 +170,8 @@ def user_wallet(request):
         'user_balance':balance
     }
     return render(request,'userprofile/wallet.html',context)
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def edit_address_userside(request,address_id):
     address=UserAdress.objects.get(id=address_id)
     if request.method=='POST':

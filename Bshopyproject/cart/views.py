@@ -5,7 +5,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
+from  django.views.decorators.cache import cache_control
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def cart(request):
     if request.user.is_authenticated:
             cart=get_object_or_404(Cart,user=request.user)
@@ -119,6 +121,8 @@ def remove_from_cart(request):
             cart_item.delete()
         return HttpResponseRedirect('cart') 
     return render(request,'signin.html')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def wishlist(request):
     if request.user.is_authenticated:
         wishlist, created = Wishlist.objects.get_or_create(user=request.user)
@@ -209,6 +213,7 @@ def update_quantity(request):
         
         return JsonResponse(response_data, status=400)
     return render(request,'signin.html')
+
 def remove_coupon(request):
     if request.user.is_authenticated:
         carts = Cart.objects.get(user =request.user)

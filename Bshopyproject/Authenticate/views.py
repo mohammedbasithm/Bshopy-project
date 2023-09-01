@@ -60,6 +60,7 @@ def signup(request):
        
     
     return render(request,'signup.html')
+
 def activate(request,uidb64,token):
     try:
         uid= force_str(urlsafe_base64_decode(uidb64))
@@ -103,7 +104,7 @@ def signin(request):
             # login(request,user)
             # return redirect('home')
 
-            return render(request,'otp.html') 
+            return redirect('otp-html') 
         else :
             messages.error(request, "Username or Password incorrect")  
             return redirect('signin')
@@ -111,7 +112,9 @@ def signin(request):
       
     return render(request,'signin.html')
 
-    
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
+def otp_html(request):
+   return render(request,'otp.html')
        
    
 @cache_control(no_cache=True,no_store=True,must_revalidate=True)
@@ -121,7 +124,7 @@ def signout(request):
     messages.error(request, 'logedout successfully')
     return redirect('home')
 
-
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def otp_login(request):
 
     
@@ -142,8 +145,10 @@ def otp_login(request):
     messages.success(request, "we have sent an otp to your email")
     return render(request,'otp.html')
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def home(request):
     return render(request,'home.html')
+
 
 def generate_otp():
     # Generate a 6-digit random OTP
@@ -156,7 +161,7 @@ def password_reset_request(request):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             # Handle case when the email is not found in the database
-            return render(request, 'password_reset_request.html', {'error_message': 'Email not found'})
+            return render(request, 'forgot_password/resend_password.html', {'errormessages': 'Email not found'})
 
         # Create a UserProfile object and associate it with the user
         user_profile, created = UserProfile.objects.get_or_create(user=user)
@@ -177,6 +182,7 @@ def password_reset_request(request):
         )
         return redirect('verify-otp')
     return render(request, 'forgot_password/resend_password.html')
+
 
 
 

@@ -10,15 +10,15 @@
                 <h5 class="card-title fw-semibold mb-4">EDIT CATEGORY</h5>
                 <div class="card">
                     <div class="card-body">
-                        <form action="{% url 'edit-category' category.id %}" method="post" enctype="multipart/form-data">
+                        <form id="CetogoryId" action="{% url 'edit-category' category.id %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="id_name" class="form-label">Category name</label>
-                                <input type="text" class="form-control" id="name" name="name" value="{{category.name}}">
+                                <input type="text" class="form-control" id="CategoryName" name="name" value="{{category.name}}">
                             </div>
                             <div class="mb-3">
                                 <label for="id_image" class="form-label">Image</label>
-                                <input type="file" class="form-control" id="id_image" name="image" onchange="previewImage(event, 'preview')">
+                                <input type="file" class="form-control" id="category_image" name="image" onchange="previewImage(event, 'preview')">
                                 <img id="preview" src="#" alt="Category Image Preview" width="100" height="100" style="display: none;">
                             </div>
                             <div class="mb-3">
@@ -43,6 +43,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
+{% block script%}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
     function previewImage(event, previewId) {
         var input = event.target;
@@ -60,5 +63,66 @@
         }
     }
 </script>
+<script>
+    document.getElementById("CetogoryId").addEventListener("submit",(e)=>{
+      e.preventDefault()
+      const CategoryName = document.getElementById("CategoryName").value;
+      
+        if (!isValidCategoryName(CategoryName)) {
+            // alert("Invalid banner name");
+            Swal.fire({
+            icon: 'error',
+            title: 'Invalid name',
+            text: 'please enter valid name .',
+            confirmButtonColor: 'goldenrod'
+            });
+        }else {
+          e.target.submit();
+        }
+    })
 
+    document.getElementById('category_image').addEventListener('change', handleImageInputChange);
+
+    function validate() {
+        
+    }
+    
+    function isValidCategoryName(CategoryName) {
+        // Regular expression to check if the name contains only letters
+        const lettersAndDigits = /^[A-Za-z0-9]+$/;
+        const stringWithoutSpaces = CategoryName.replace(/\s+/g, '');
+        // Minimum length requirement (adjust as needed)
+        const minLength = 2;
+        
+        return lettersAndDigits.test(stringWithoutSpaces) && stringWithoutSpaces.length >= minLength;
+    }
+
+    function isValidImage(file) {
+    const allowedExtensions = ["jpg", "jpeg", "png", "gif","avif"];
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+
+    return allowedExtensions.includes(fileExtension) && file.size <= maxSizeInBytes;
+    }
+
+    // Function to handle image input change event
+    function handleImageInputChange(event) {
+        const input = event.target; 
+
+    for (const file of input.files) {
+      if (!isValidImage(file)) {
+        // Show SweetAlert error message
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Image',
+          text: 'Allowed formats are JPG, JPEG, PNG, and GIF (up to 5MB).',
+          confirmButtonColor: 'goldenrod'
+        });
+
+        input.value = ""; // Reset the input value to clear the invalid selection
+        return;
+      }
+    }
+}
+  </script>
 {% endblock %}

@@ -10,11 +10,11 @@
                 <h5 class="card-title fw-semibold mb-4">ADD SIZE</h5>
                 <div class="card">
                     <div class="card-body">
-                        <form action="{% url 'add-size' %}" method="post" enctype="multipart/form-data">
+                        <form id="SizeId" action="{% url 'add-size' %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="mb-3">
-                                <label for="id_name" class="form-label">Brand name</label>
-                                <input type="number" class="form-control" id="id_name" name="size">
+                                <label for="id_name" class="form-label">Size</label>
+                                <input type="number" class="form-control" id="Size" name="size">
                             </div>
                             <button type="submit" class="btn btn-primary">SUBMIT</button>
                         </form>
@@ -26,4 +26,37 @@
 </div>
 
 
+{% endblock %}
+{% block script%}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    document.getElementById("SizeId").addEventListener("submit",(e)=>{
+      e.preventDefault()
+      const Size = document.getElementById("Size").value;
+
+    if (!isValidSize(Size)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Size',
+            text: 'Invalid Size. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+        });
+    }else {
+          e.target.submit();
+        }
+    })
+
+
+    function validate() {
+        
+    }
+
+    function isValidSize(Size) {
+        // Regular expression to check for non-negative integers and no spaces
+        const nonNegativeIntegerPattern = /^\d+$/;
+
+        return nonNegativeIntegerPattern.test(Size) && Size >=0;
+    }
+    
+  </script>
 {% endblock %}

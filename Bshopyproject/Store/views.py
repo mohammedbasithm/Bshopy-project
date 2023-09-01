@@ -2,10 +2,12 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from .models import *
 from banner.models import Banner
+from django.views.decorators.cache import cache_control
 
 # Create your views here.
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def home(request):
-    categories=Category.objects.all()
+    categories=Category.objects.filter(is_active=True)
     banner=Banner.objects.all()
     products=Product.objects.all()[:8]
     context={
@@ -15,12 +17,14 @@ def home(request):
         }
     return render(request,'home.html',context)
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def category(request,slug):
     categories = get_object_or_404(Category, slug=slug)
     products = categories.product_set.all()  # Retrieve products based on the category
     
     return render(request,'category.html',{'products':products,'category':categories})
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def productdetails(request, slug):
     product_variant = get_object_or_404(ProductVariant, slug=slug)
     product = product_variant.product
@@ -37,6 +41,8 @@ def productdetails(request, slug):
         'related_products': related_products
     })
 from django.core.paginator import Paginator
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def shop(request):  
     products = Product.objects.filter(is_active=True)
     price = ProductVariant.objects.filter(product__in=products).all()
@@ -92,7 +98,7 @@ def shop(request):
 
     return render(request, 'shop.html', context)
 
-
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def get_variant(request):
     if request.method == 'GET':
         

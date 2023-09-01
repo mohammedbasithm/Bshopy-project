@@ -9,19 +9,19 @@
                     <h2 class="card-title text-center">Add Coupon</h2>
                 </div>
                 <div class="card-body">
-                    <form method="post" enctype="multipart/form-data" action="{% url 'add-coupon' %}">
+                    <form id="CouponId" method="post" enctype="multipart/form-data" action="{% url 'add-coupon' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="coupon_code" class="form-label">Coupon Code</label>
-                            <input type="text" class="form-control" id="coupon_code" name="coupon_code" required>
+                            <input type="text" class="form-control" id="CouponCode" name="coupon_code" required>
                         </div>
                         <div class="mb-3">
                             <label for="coupon_price" class="form-label">Coupon Price</label>
-                            <input type="text" class="form-control" id="coupon_price" name="coupon_price" required>
+                            <input type="text" class="form-control" id="CouponPrice" name="coupon_price" required>
                         </div>
                         <div class="mb-3">
                             <label for="minimum_amount" class="form-label">Minimum Amount</label>
-                            <input type="text" class="form-control" id="minimum_amount" name="minimum_amount" required>
+                            <input type="text" class="form-control" id="MinimumAmount" name="minimum_amount" required>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -33,4 +33,66 @@
     </div>
 </div>
 
+{% endblock %}
+{% block script%}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    document.getElementById("CouponId").addEventListener("submit",(e)=>{
+      e.preventDefault()
+      const CouponCode = document.getElementById("CouponCode").value;
+      const CouponPrice = document.getElementById("CouponPrice").value;
+      const MinimumAmount = document.getElementById("MinimumAmount").value;
+
+    if (!isValidCouponCode(CouponCode)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Coupon Code',
+            text: 'Invalid Coupon Code. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+        });
+    }else if (!isValidCouponPrice(CouponPrice)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid CouponPrice',
+            text: 'Invalid CouponPrice. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+        });
+    }else if (!isValidMinimumAmount(MinimumAmount)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid MinimumAmount',
+            text: 'Invalid MinimumAmount. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+        });
+    }else {
+          e.target.submit();
+        }
+    })
+
+
+    function validate() {
+        
+    }
+
+    function isValidCouponCode(CouponCode) {
+        // Regular expression to check if the coupon code contains only uppercase letters and digits
+        const uppercaseLettersAndDigits = /^[A-Z0-9]+$/;
+        // Minimum length requirement (adjust as needed)
+        const minLength = 6;
+        
+        return uppercaseLettersAndDigits.test(CouponCode) && CouponCode.length >= minLength;
+    }
+    
+    function isValidCouponPrice(CouponPrice) {
+        // Regular expression to match a string containing only digits (integers)
+        const digitPattern = /^\d+$/;
+
+        return digitPattern.test(CouponPrice);
+    }
+    function isValidMinimumAmount(MinimumAmount) {
+        const digitPattern = /^\d+$/;
+        return digitPattern.test(MinimumAmount);
+    }  
+   
+  </script>
 {% endblock %}

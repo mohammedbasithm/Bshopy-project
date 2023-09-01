@@ -4,21 +4,21 @@
 
 <div class="container">
     <h2>Edit Coupon</h2>
-    <form method="post" enctype="multipart/form-data" action="{% url 'edit-coupon' coupon.id %}">
+    <form id="CouponId" method="post" enctype="multipart/form-data" action="{% url 'edit-coupon' coupon.id %}">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="name">Coupon Code</label>
-                    <input type="text" class="form-control"value='{{coupon.coupon_code}}' id="name" name="coupon_code" required>
+                    <input type="text" class="form-control"value='{{coupon.coupon_code}}' id="CouponCode" name="coupon_code" required>
                 </div>
                 <div class="form-group">
                     <label for="name">Coupon Price</label>
-                    <input type="text" class="form-control"value='{{coupon.coupon_price}}' id="name" name="coupon_price" required>
+                    <input type="text" class="form-control"value='{{coupon.coupon_price}}' id="CouponPrice" name="coupon_price" required>
                 </div>
                 <div class="form-group">
                     <label for="name">Minimum Amount</label>
-                    <input type="text" class="form-control"value='{{coupon.minimum_amount}}' id="name" name="minimum_amount" required>
+                    <input type="text" class="form-control"value='{{coupon.minimum_amount}}' id="MinimumAmount" name="minimum_amount" required>
                 </div>
             </div> 
         </div>
@@ -26,4 +26,66 @@
     </form>
 </div>
 
+{% endblock %}
+{% block script%}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    document.getElementById("CouponId").addEventListener("submit",(e)=>{
+      e.preventDefault()
+      const CouponCode = document.getElementById("CouponCode").value;
+      const CouponPrice = document.getElementById("CouponPrice").value;
+      const MinimumAmount = document.getElementById("MinimumAmount").value;
+
+    if (!isValidCouponCode(CouponCode)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Coupon Code',
+            text: 'Invalid Coupon Code. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+        });
+    }else if (!isValidCouponPrice(CouponPrice)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid CouponPrice',
+            text: 'Invalid CouponPrice. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+        });
+    }else if (!isValidMinimumAmount(MinimumAmount)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid MinimumAmount',
+            text: 'Invalid MinimumAmount. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+        });
+    }else {
+          e.target.submit();
+        }
+    })
+
+
+    function validate() {
+        
+    }
+
+    function isValidCouponCode(CouponCode) {
+        // Regular expression to check if the coupon code contains only uppercase letters and digits
+        const uppercaseLettersAndDigits = /^[A-Z0-9]+$/;
+        // Minimum length requirement (adjust as needed)
+        const minLength = 6;
+        
+        return uppercaseLettersAndDigits.test(CouponCode) && CouponCode.length >= minLength;
+    }
+    
+    function isValidCouponPrice(CouponPrice) {
+        // Regular expression to match a string containing only digits (integers)
+        const digitPattern = /^\d+$/;
+
+        return digitPattern.test(CouponPrice);
+    }
+    function isValidMinimumAmount(MinimumAmount) {
+        const digitPattern = /^\d+$/;
+        return digitPattern.test(MinimumAmount);
+    }  
+   
+  </script>
 {% endblock %}

@@ -31,8 +31,8 @@
                     <td>{{ banner.id }}</td>
                     <td>
                         
-                            {% if banner.is_active %}
-                                <a href="{% url 'disable-banner' banner.id %}" class="btn btn-danger btn-sm">Disable</a>
+                            {% if banner.is_active  %}
+                                <a href="{% url 'disable-banner' banner.id %}" class="btn btn-danger btn-sm">disable</a>
                             {% else %}
                                 <a href="{% url 'enable-banner' banner.id %}" class="btn btn-success btn-sm">Enable</a>
                             {% endif %}
@@ -40,7 +40,7 @@
                     </td>
                     <td>
                         <div class="btn-group" role="group">
-                            <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{% url 'edit-banner' banner.id %}" class="btn btn-primary btn-sm">Edit</a>
                         </div>
                     </td>
                 </tr>

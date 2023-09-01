@@ -12,8 +12,9 @@ from django.db.models.functions import TruncDate
 from django.utils.timezone import now
 from userprofile.models import Wallet,WalletTransaction
 from banner.models import Banner
+from  django.views.decorators.cache import cache_control
 # Create your views here.
-
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def adminhome(request):
     if request.user.is_superuser:
         if request.method == 'GET':
@@ -127,6 +128,7 @@ def adminhome(request):
     return redirect('signin')
 from django.core.paginator import Paginator
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def user(request):
     if request.user.is_superuser:
         users=User.objects.all().order_by('id')
@@ -136,6 +138,8 @@ def user(request):
 
         return render(request,'adminside/user_list.html',context)
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def products(request):
     if request.user.is_superuser:
         products=Product.objects.all().order_by('id')
@@ -145,6 +149,8 @@ def products(request):
         }
         return render(request,'adminside/products.html',context)
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def block_user(request,user_id):
     if request.user.is_superuser:
         user=User.objects.get(id=user_id)
@@ -152,6 +158,8 @@ def block_user(request,user_id):
         user.save()
         return redirect('user')
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def unblock_user(request,user_id):
     if request.user.is_superuser:
         user=User.objects.get(id=user_id)
@@ -159,6 +167,8 @@ def unblock_user(request,user_id):
         user.save()
         return redirect('user')
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def delete_user(request,user_id):
     if request.user.is_superuser:
         user=User.objects.get(id=user_id)
@@ -166,7 +176,7 @@ def delete_user(request,user_id):
         return redirect('user')
     return redirect('signin')
 
-
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def edit_product(request, product_id):
     if request.user.is_superuser:
     
@@ -199,6 +209,7 @@ def edit_product(request, product_id):
 
     return redirect('signin')
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def enable_product(request,product_id):
     if request.user.is_superuser:
         product=Product.objects.get(id=product_id)
@@ -206,6 +217,8 @@ def enable_product(request,product_id):
         product.save()
         return redirect('product')
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def disable_product(request,product_id):
     if request.user.is_superuser:
         product=Product.objects.get(id=product_id)
@@ -213,6 +226,8 @@ def disable_product(request,product_id):
         product.save()
         return redirect('product')
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def category(request):
     if request.user.is_superuser:
         category=Category.objects.all().order_by('id')
@@ -221,6 +236,8 @@ def category(request):
         }
         return render(request,'adminside/category.html',context)
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def add_product(request):
     if request.user.is_superuser:
         if request.method=='POST':
@@ -287,6 +304,8 @@ def add_product(request):
 
         return render(request,'adminside/add_product.html',context)
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def add_category(request):
     if request.user.is_superuser:
         if request.method=='POST':
@@ -300,13 +319,17 @@ def add_category(request):
         
         return render(request,'adminside/add_category.html')
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 #banner list
 def banner_list(request):
     if request.user.is_superuser:
-        banner=Banner.objects.all()
+        banner=Banner.objects.all().order_by('id')
         return render(request,'adminside/banner.html',{'banners':banner})
     return redirect('signin')
+
 #add banner
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def add_banner(request):
     if request.user.is_superuser:
         if request.method=='POST':
@@ -320,7 +343,23 @@ def add_banner(request):
         
         return render(request,'adminside/add_banner.html')
     return redirect('signin')
+
+#edit banner
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
+def edit_banner(request,banner_id):
+    if request.user.is_superuser:
+        banner=Banner.objects.get(id=banner_id)
+        if request.method=="POST":
+            banner.name=request.POST['banner_name']
+            banner.banner_image=request.FILES.get('image')
+            banner.save()
+            return redirect('banner-list')
+    
+        return render(request,'adminside/edit_banner.html',{'banner':banner})
+    return redirect('signin')
+
 #enable banner
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def enable_banner(request,banner_id):
     if request.user.is_superuser:
         banner=Banner.objects.get(id=banner_id)
@@ -328,17 +367,18 @@ def enable_banner(request,banner_id):
         banner.save()
         return redirect('banner-list')
     return redirect('signin')
+
 #disable banner
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def disable_banner(request,banner_id):
     if request.user.is_superuser:
-        banner=Product.objects.get(id=banner_id)
-        print(banner.is_active)
+        banner=Banner.objects.get(id=banner_id)
         banner.is_active=False
         banner.save()
-        print(banner.is_active)
-        print('hello')
         return redirect('banner-list')
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def product_view(request,product_id):
     if request.user.is_superuser:
         product=Product.objects.get(id=product_id)
@@ -349,6 +389,8 @@ def product_view(request,product_id):
         }
         return render(request,'adminside/product_view.html',context)
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def enable_variant(request,variant_id):
     if request.user.is_superuser:
         productvariant=ProductVariant.objects.get(id=variant_id)
@@ -357,6 +399,7 @@ def enable_variant(request,variant_id):
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return redirect('signin')
+
 def disable_variant(request,variant_id):
     if request.user.is_superuser:
         productvariant=ProductVariant.objects.get(id=variant_id)
@@ -365,8 +408,9 @@ def disable_variant(request,variant_id):
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return redirect('signin')
-from django.core.exceptions import ValidationError
 
+from django.core.exceptions import ValidationError
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def add_variant(request, product_id):
     if request.user.is_superuser:
         product = Product.objects.get(id=product_id)
@@ -447,9 +491,12 @@ def add_variant(request, product_id):
         }
         return render(request, 'adminside/add_variant.html', context)
     return redirect('signin')
+
 def upload_images(request):
     return render(request,'adminside/upload_images.html')
 
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def edit_variants(request,variant_id):
     if request.user.is_superuser:
         variants=ProductVariant.objects.get(id=variant_id)
@@ -507,6 +554,9 @@ def edit_variants(request,variant_id):
         }
         return render(request,'adminside/edit_variant.html',context)
     return redirect('signin')
+
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def disable_category(request,category_id):
     if request.user.is_superuser:
         category=Category.objects.get(id=category_id)
@@ -514,6 +564,7 @@ def disable_category(request,category_id):
         category.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return redirect('signin')
+
 def enable_category(request,category_id):
     if request.user.is_superuser:
         category=Category.objects.get(id=category_id)
@@ -521,6 +572,9 @@ def enable_category(request,category_id):
         category.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return redirect('signin')
+
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def edit_category(request,category_id):
     if request.user.is_superuser:
         category=Category.objects.get(id=category_id)
@@ -537,6 +591,8 @@ def edit_category(request,category_id):
         }
         return render(request,'adminside/edit_category.html',context)
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def order_list(request):
     if request.user.is_superuser:
         orders=Order.objects.all().order_by('-id')
@@ -546,6 +602,8 @@ def order_list(request):
         }
         return render(request,'adminside/order_list.html',context)
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def admin_order_view(request,order_id):
     if request.user.is_superuser:
         order_view=get_object_or_404(Order,id=order_id)
@@ -557,12 +615,15 @@ def admin_order_view(request,order_id):
         }
         return render(request,'adminside/order_view.html',context)
     return redirect('signin')
+
 def delete_image(request,img_id):
     if request.user.is_superuser:
         img=ProductImage.objects.get(id=img_id)
         img.delete()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def add_brand(request):
     if request.user.is_superuser:
         if request.method=='POST':
@@ -571,6 +632,8 @@ def add_brand(request):
         
         return render(request,'adminside/add_brand.html')
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def add_size(request):
     if request.user.is_superuser:
         if request.method=='POST':
@@ -579,12 +642,15 @@ def add_size(request):
         
         return render(request,'adminside/add_size.html')
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def coupon_list(request):
     if request.user.is_superuser:
-        coupons=Coupon.objects.all()
+        coupons=Coupon.objects.all().order_by('id')
 
         return render(request,'adminside/coupon_list.html',{'coupons':coupons})
     return redirect('signin')
+
 def disable_coupon(request,coupon_id):
     if request.user.is_superuser:
         coupon=Coupon.objects.get(id=coupon_id)
@@ -592,6 +658,8 @@ def disable_coupon(request,coupon_id):
         coupon.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return redirect('signin')
+
+
 def enable_coupon(request,coupon_id):
     if request.user.is_superuser:
 
@@ -600,6 +668,8 @@ def enable_coupon(request,coupon_id):
         coupon.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     return redirect('signin')
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def add_coupon(request):
     if request.user.is_superuser:
         if request.method=='POST':
@@ -618,6 +688,7 @@ def add_coupon(request):
         return render(request,'adminside/add_coupon.html')
     return redirect('signin')
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def edit_coupon(request,coupon_id):
     if request.user.is_superuser:
         coupon=Coupon.objects.get(id=coupon_id)
@@ -661,7 +732,7 @@ def order_delivered(request, order_id):
     return redirect('signin')
 
 def admin_order_cancel(request, order_id):
-    print(order_id)
+    
     if request.user.is_superuser:
         order = get_object_or_404(Order, id=order_id)
         user = order.user
@@ -770,6 +841,7 @@ def sales_report(request):
         return render(request, 'adminside/sales_report.html', context)
     return redirect('signin')
 
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def admin_profile(request):
     if request.user.is_superuser:
         user=request.user

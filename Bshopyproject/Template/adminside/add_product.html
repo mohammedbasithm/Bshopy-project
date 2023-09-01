@@ -4,35 +4,36 @@
 <h1>add product</h1>
 <div class="container">
     
-    <form method="post" enctype="multipart/form-data" action="{% url 'add-product' %}">
+    <form id="ProductId" method="post" enctype="multipart/form-data" action="{% url 'add-product' %}">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="name">Product Name</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                    <input type="text" class="form-control" id="ProductName" name="name" required>
                 </div>
                 <div class="form-group">
                     <label for="shortdescription">Short description</label>
-                    <input type="text" class="form-control" id="shortdescription" name="description" required>
+                    <input type="text" class="form-control" id="ShortDescription" name="description" required>
                 </div>
-            
-                <select class="form-select my-2" aria-label="Default select example" name="category" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
-                    <option selected>category</option>
+                <label for="shortdescription">Category</label>
+                <select class="form-select my-2" aria-label="Default select example" id="category" name="category" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
+                    
                     {% for category in categories %}
                         <option value="{{category.id}}">{{category.name}}</option>
                     {% endfor %}
                 </select>
                 
-                
+                <label for="shortdescription">Brand</label>
                 <select class="form-select" aria-label="Default select example" name="brand" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
-                    <option selected>Brand</option>
+                    
                     {% for brand in brands %}
                         <option value="{{brand.id}}">{{brand.name}}</option>
                     {% endfor %}
                 </select>
+                <label for="size">Size</label>
                 <select class="form-select" aria-label="Default select example" name="size" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
-                    <option selected>size</option>
+                   
                     {% for size in sizes %}
                         <option value="{{size.id}}">{{size.size}}</option>
                     {% endfor %}
@@ -54,7 +55,7 @@
                 </div>
                 <div class="form-group">
                     <label for="images">Variant Images</label>
-                    <input type="file" class="form-control-file" id="images" onchange="previewImages(event, 'preview')" name="images" multiple required>
+                    <input type="file" class="form-control-file" id="product_image" onchange="previewImages(event, 'preview')" name="images" multiple required>
 
                 </div>
                 <div id="preview" ></div>
@@ -64,6 +65,9 @@
         <button type="submit" class="btn btn-primary">SUBMIT</button>
     </form>
 </div>
+{% endblock %}
+{% block script%}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
     function previewImages(event, previewId) {
         var input = event.target;
@@ -88,4 +92,127 @@
         }
     }
 </script>
+<script>
+    document.getElementById("ProductId").addEventListener("submit",(e)=>{
+      e.preventDefault()
+      
+      
+      const ProductName = document.getElementById("ProductName").value;
+      const ShortDescription = document.getElementById("ShortDescription").value;
+      const price = document.getElementById("price").value;
+      const stock = document.getElementById("stock").value;
+      const discount = document.getElementById("discount").value;
+        if (!isValidPrice(price)) {
+            // alert("Invalid banner name");
+            Swal.fire({
+            icon: 'error',
+            title: 'Invalid price',
+            text: 'Invalid price. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+            });
+        } else if (!isValidProductName(ProductName)) {
+            // alert("Invalid banner name");
+            Swal.fire({
+            icon: 'error',
+            title: 'Invalid ProductName',
+            text: 'Invalid ProductName. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+            });
+        } else if (!isValidShortDescription(ShortDescription)) {
+            // alert("Invalid banner name");
+            Swal.fire({
+            icon: 'error',
+            title: 'Invalid ShortDescription',
+            text: 'Invalid ShortDescription. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+            });
+        } else if (!isValidDiscount(discount)) {
+            // alert("Invalid banner name");
+            Swal.fire({
+            icon: 'error',
+            title: 'Invalid discount',
+            text: 'Invalid discount. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+            });
+        }else if (!isValidStock(stock)) {
+            // alert("Invalid banner name");
+            Swal.fire({
+            icon: 'error',
+            title: 'Invalid stock',
+            text: 'Invalid stock. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+            });
+        }else {
+          e.target.submit();
+        }
+    })
+
+    document.getElementById('product_image').addEventListener('change', handleImageInputChange);
+
+    function validate() {
+        
+    }
+
+    function isValidProductName(ProductName) {
+        // Regular expression to check if the name contains only letters
+        const lettersAndDigits = /^[A-Za-z0-9]+$/;
+        const stringWithoutSpaces = ProductName.replace(/\s+/g, '');
+        // Minimum length requirement (adjust as needed)
+        const minLength = 2;
+        
+        return lettersAndDigits.test(stringWithoutSpaces) && stringWithoutSpaces.length >= minLength;
+    }
+    function isValidShortDescription(ShortDescription) {
+        const lettersAndDigits = /^[A-Za-z0-9]+$/;
+        const stringWithoutSpaces = ShortDescription.replace(/\s+/g, '');
+        // Minimum length requirement (adjust as needed)
+        const minLength = 10;
+        
+        return lettersAndDigits.test(stringWithoutSpaces) && stringWithoutSpaces.length >= minLength;
+    }
+    function isValidPrice(price) {
+        // Check if the price is a non-negative value
+        return price >= 0;
+    }
+    function isValidDiscount(discount) {
+        // Define a reasonable range for valid discounts
+        const minDiscount = 0;
+        const maxDiscount = 100;
+
+        // Check if the discount is within the valid range
+        return discount >= minDiscount && discount <= maxDiscount;
+    }
+    function isValidStock(stock) {
+        // Check if the price is a non-negative value
+        return stock >= 0;
+    }
+
+    function isValidImage(file) {
+    const allowedExtensions = ["jpg", "jpeg", "png", "gif","avif"];
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+
+    return allowedExtensions.includes(fileExtension) && file.size <= maxSizeInBytes;
+    }
+
+    // Function to handle image input change event
+    function handleImageInputChange(event) {
+        const input = event.target; 
+
+    for (const file of input.files) {
+      if (!isValidImage(file)) {
+        // Show SweetAlert error message
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Image',
+          text: 'Allowed formats are JPG, JPEG, PNG, and GIF (up to 5MB).',
+          confirmButtonColor: 'goldenrod'
+        });
+
+        input.value = ""; // Reset the input value to clear the invalid selection
+        return;
+      }
+    }
+}
+  </script>
 {% endblock %}

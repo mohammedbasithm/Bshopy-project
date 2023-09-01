@@ -149,6 +149,7 @@ def place_order(request,order_id):
         variant.save()
         item.delete()
     return render(request,'order/order_placed.html')
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def initiate_payment(request):
     if request.method == 'POST':
@@ -206,6 +207,7 @@ def initiate_payment(request):
 
     # Return an error response if the request method is not POST
     return JsonResponse({'error': 'Invalid request method'})
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def online_payment_order(request, add_id):
     
@@ -280,10 +282,13 @@ def online_payment_order(request, add_id):
     else:
         # Handle invalid request method (GET, etc.)
         return JsonResponse({'error': 'Invalid request method'})
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def order_success(request):
     return render(request,'order/order_placed.html')
 from django.core.paginator import Paginator
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def order(request):
     orders=Order.objects.filter(user=request.user).order_by('-id')
     paginator = Paginator(orders, 9)  # Display 9 categories per page
@@ -303,6 +308,8 @@ def order_view(request,order_id):
     }
     return render(request,'userprofile/order_view.html',context)
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
+
+@cache_control(no_cache=True,no_store=True,must_revalidate=True)
 def order_cancel(request, order_id):
     order = get_object_or_404(Order, id=order_id)    
     if order.order_status != 'Cancelled':
@@ -347,6 +354,7 @@ def return_request(request, order_id):
         order.save()
 
     return redirect(request.META.get('HTTP_REFERER'))
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def pay_wallet(request,order_id):
     

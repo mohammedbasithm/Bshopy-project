@@ -7,20 +7,34 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title fw-semibold mb-4">ADD BANNER</h5>
+                <h5 class="card-title fw-semibold mb-4">EDIT BANNER</h5>
                 <div class="card">
                     <div class="card-body">
-                        <form id="bannerId" action="{% url 'add-banner' %}" method="post" enctype="multipart/form-data">
+                        <form id="bannerId" action="{% url 'edit-banner' banner.id %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="mb-3">
-                                <label for="id_name" class="form-label">Bnner Name</label>
-                                <input type="text" class="form-control" id="id_name" name="banner_name">
+                                <label for="id_name" class="form-label">Banner name</label>
+                                <input type="text" class="form-control" id="id_name" name="banner_name" value="{{banner.name}}">
                             </div>
                             <div class="mb-3">
-                                <label for="id_image" class="form-label">Banner Image</label>
-                                <input type="file" class="form-control" id="id_image" name="image" onchange="previewImage(event, 'preview')" required>
+                                <label for="id_image" class="form-label">Image</label>
+                                <input type="file" class="form-control" id="id_image" name="image" onchange="previewImage(event, 'preview')">
                                 <img id="preview" src="#" alt="Category Image Preview" width="100" height="100" style="display: none;">
                             </div>
+                            <div class="mb-3">
+                                <label for="existing_images" class="form-label">Existing Images</label>
+                                <div class="d-flex" id="existing-images-container">
+                                    {% if banner.image %}
+                                        <div class="me-2">
+                                            <img src="{{ banner.banner_image.url }}" alt="Variant Image" width="100" height="100">
+                                        </div>
+                                    {% else %}
+                                        <p>No existing images</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                           
                             <button type="submit" class="btn btn-primary">SUBMIT</button>
                         </form>
                     </div>

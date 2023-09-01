@@ -30,50 +30,50 @@
                           <h5 class="mb-0">Add Address</h5>
                         </div>
                         <div class="card-body d-flex justify-content-center">
-                            <form method="POST" action="{% url 'no-address' %}">
+                            <form id="editaddress" method="POST" action="{% url 'no-address' %}">
                                 {% csrf_token %}
                               
                             <!-- 2 column grid layout with text inputs for the first and last names -->
                             <div class="row mb-3">
                               <div class="col">
                                 <div class="form-outline">
-                                  <input type="text" id="form7Example1"  name='fname' class="form-control" placeholder='First Name' required/>
+                                  <input type="text" id="fname"  name='fname' class="form-control" placeholder='First Name' required/>
                                 </div>
                               </div>
                               <div class="col">
                                 <div class="form-outline">
-                                    <input type="text" id="form7Example1"  name='lname' class="form-control" placeholder='Last Name' required/>
+                                    <input type="text" id="lname"  name='lname' class="form-control" placeholder='Last Name' required/>
                                 </div>
                               </div>
                             </div>
                             <!-- Text input -->
                             <div class="form-outline mb-4">
-                                <input type="text" id="form7Example4" class="form-control" name='address1' placeholder='Address 'required/>
+                                <input type="text" id="address1" class="form-control" name='address1' placeholder='Address 'required/>
                           
                                 
                             </div>
                             <div class="form-outline mb-4">
-                                <input type="text" id="form7Example4" class="form-control" name='address2' placeholder='Aditional Address '/>
+                                <input type="text" id="address2" class="form-control" name='address2' placeholder='Aditional Address '/>
                           
                                 
                             </div>
                             
                             <!-- Text input -->
                             <div class="form-outline mb-4">
-                              <input type="text" id="form7Example4" class="form-control" name='city' placeholder='City'required/>
+                              <input type="text" id="city" class="form-control" name='city' placeholder='City'required/>
                           
                             </div>
                                
                             <!-- Text input -->
                             <div class="form-outline mb-4">
-                                <input type="text" id="form7Example4" class="form-control" name='state' placeholder='State'required/>
+                                <input type="text" id="state" class="form-control" name='state' placeholder='State'required/>
                             
                               </div>
                   
                                  
                             <!-- Text input -->
                             <div class="form-outline mb-4">
-                                <input type="text" id="form7Example4" class="form-control" name='country' placeholder='country'required/>
+                                <input type="text" id="country" class="form-control" name='country' placeholder='country'required/>
                             
                               </div>
                     
@@ -87,21 +87,15 @@
                             <!-- Number input -->
                             <div class="form-outline mb-4">
 
-                                <input type="number" id="form7Example6" class="form-control" name='pincode' placeholder='Postal Code'required/>
+                                <input type="number" id="pinCode" class="form-control" name='pincode' placeholder='Postal Code'required/>
                            
                             </div>
                               <!-- Number input -->
                               <div class="form-outline mb-4">
-                                <input type="number" id="form7Example6" class="form-control" name='phone' placeholder='Mobile Number'required/>
+                                <input type="number" id="phoneNumber" class="form-control" name='phone' placeholder='Mobile Number'required/>
                              
                               </div>
-                              <!-- <div class="form-check mb-4">
-                                <input class="form-check-box" type="checkbox" id="is_delivery_address" name="is_delivery_address">
-                                <label class="form-check-box" for="is_delivery_address">Set as Delivery Address</label>
-                              </div> -->
-                  
-                         
-                  
+                          
                             <!-- Checkbox -->
                             <div class="form-group d-flex justify-content-center mb-2">
                                 <button type="submit" class="btn btn-primary  px-5 py-2" ;>
@@ -125,4 +119,99 @@
 </div>
 
 
+{% endblock %}
+{% block script %}
+<script>
+  document.getElementById("editaddress").addEventListener("submit",(e)=>{
+    e.preventDefault()
+    const phoneNumber = document.getElementById("phoneNumber").value;
+      const pinCode = document.getElementById("pinCode").value;
+      const fname = document.getElementById("fname").value;
+      const lname = document.getElementById("lname").value;
+      const city = document.getElementById("city").value;
+      const state = document.getElementById("state").value;
+      const country = document.getElementById("country").value;
+      const address1 = document.getElementById("address1").value;
+
+
+      if (!isValidPhoneNumber(phoneNumber)) {
+          alert("Invalid phone number");
+      } else if (!isValidPinCode(pinCode)) {
+          alert("Invalid PIN code");
+      } else if (!isValidFirstName(fname)) {
+          alert("Invalid first name");
+      }else if (!isValidLastName(lname)) {
+          alert("Invalid last name");
+      }else if (!isValidCityName(city)) {
+          alert("Invalid city name");
+      }else if (!isValidStateName(state)) {
+          alert("Invalid state name");
+      }else if (!isValidCountryName(country)) {
+          alert("Invalid country name");
+      }else if (!isValidAddress(address1)) {
+          alert("Invalid address name");
+      }else {
+        e.target.submit();
+      }
+  })
+  function validate() {
+      
+  }
+  
+  function isValidPhoneNumber(phoneNumber) {
+      // Validate phone number here
+      // You can implement your own validation logic for phone numbers
+      // For example, checking for length, format, etc.
+      const stringWithoutSpaces = phoneNumber.replace(/\s+/g, '');
+      return stringWithoutSpaces.length == 10 && !/^[0]+$/.test(stringWithoutSpaces);
+  }
+  
+  function isValidPinCode(pinCode) {
+      // Validate PIN code here
+      // Use the regular expression provided earlier in this conversation
+      return /^(?!010000|999999)(?!0{6})[1-9][0-9]{5}$/.test(pinCode);
+  }
+  function isValidFirstName(fname) {
+      // Regular expression to check if the name contains only letters
+      const lettersOnly = /^[A-Za-z]+$/;
+      const stringWithoutSpaces = fname.replace(/\s+/g, '');
+      // Minimum length requirement (adjust as needed)
+      const minLength = 2;
+      
+      return lettersOnly.test(stringWithoutSpaces) && stringWithoutSpaces.length >= minLength;
+  }
+  function isValidLastName(lname) {
+      // Regular expression to check if the name contains only letters
+      const lettersOnly = /^[A-Za-z]+$/;
+      const stringWithoutSpaces = lname.replace(/\s+/g, '');
+      // Minimum length requirement (adjust as needed)
+      const minLength = 2;
+      
+      return lettersOnly.test(stringWithoutSpaces) && stringWithoutSpaces.length >= minLength;
+  }
+  function isValidCityName(city) {
+      // Basic validation: check if the city name contains only letters and spaces
+      const stringWithoutSpaces = city.replace(/\s+/g, '');
+      const minLength = 2;
+
+      return /^[A-Za-z\s]+$/.test(stringWithoutSpaces) && stringWithoutSpaces.length >= minLength;
+  }
+  function isValidStateName(state) {
+      // Basic validation: check if the state name contains only letters and spaces
+      const stringWithoutSpaces = state.replace(/\s+/g, '');
+      const minLength = 2;
+      return /^[A-Za-z\s]+$/.test(stringWithoutSpaces)&& stringWithoutSpaces.length >= minLength;
+  }
+  function isValidCountryName(country) {
+      // Basic validation: check if the state name contains only letters and spaces
+      const stringWithoutSpaces = country.replace(/\s+/g, '');
+      const minLength = 2;
+      return /^[A-Za-z\s]+$/.test(stringWithoutSpaces)&& stringWithoutSpaces.length >= minLength;
+  }
+  function isValidAddress(address1) {
+      // Basic validation: check if the address is non-empty
+      const stringWithoutSpaces = address1.replace(/\s+/g, '');
+      return stringWithoutSpaces && address1.length > 0;
+  }
+</script>
 {% endblock %}

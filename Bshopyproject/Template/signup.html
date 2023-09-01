@@ -49,7 +49,7 @@
 
                 
                 <div class="position-relative ">
-                  <input type="password" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,10}$"
+                  <input type="password" 
                          title="Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 special character, and be 8-10 characters long."
                          id="pass1" class="form-control form-control-lg" name="pass1" required>
                   <i class="fas fa-eye password-toggle-icon" id="pass1-toggle" onclick="togglePasswordVisibility('pass1')"></i>
@@ -79,6 +79,7 @@
 
 {% endblock %}
 {% block script %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
   function togglePasswordVisibility(inputId) {
       var passwordInput = document.getElementById(inputId);
@@ -92,6 +93,62 @@
           passToggle.classList.remove("fa-eye-slash");
           passToggle.classList.add("fa-eye");
       }
+  }
+</script>
+<script>
+  document.getElementById("signup").addEventListener("submit",(e)=>{
+    e.preventDefault()
+    const username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const pass1 = document.getElementById("pass1").value;
+
+
+      if (!isValidUserName(username)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid username',
+            text: 'Invalid username minimum 4 letter enter',
+            confirmButtonColor: 'goldenrod'
+            })
+      } else if (!isValidEmail(email)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid email',
+            text: 'Invalid email',
+            confirmButtonColor: 'goldenrod'
+            })
+      } else if (!isValidPassword(pass1)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid password',
+            text: 'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, 1 special character, and be 8-10 characters long',
+            confirmButtonColor: 'goldenrod'
+            })
+      }else {
+        e.target.submit();
+      }
+  })
+  function validate() {
+      
+  }
+  
+  function isValidUserName(username) {
+      // Regular expression to check if the name contains only letters
+      const lettersOnly = /^[A-Za-z]+$/;
+      const stringWithoutSpaces = username.replace(/\s+/g, '');
+      // Minimum length requirement (adjust as needed)
+      const minLength = 4;
+      
+      return lettersOnly.test(stringWithoutSpaces) && stringWithoutSpaces.length >= minLength;
+  }
+  function isValidEmail(email) {
+      // Basic email validation using regular expression
+      const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      return emailPattern.test(email);
+  }
+  function isValidPassword(pass1) {
+      const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,10}$/;
+      return passwordPattern.test(pass1);
   }
 </script>
 {% endblock %}

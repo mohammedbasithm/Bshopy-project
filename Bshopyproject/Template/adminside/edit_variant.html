@@ -21,7 +21,7 @@
         </div>
     {% endfor %}
     
-    <form method="post" enctype="multipart/form-data" >
+    <form id="ProductvariantId" method="post" enctype="multipart/form-data" >
         {% csrf_token %}
         
         <div class="row">
@@ -30,7 +30,7 @@
             
                 
             
-                <select class="form-select" aria-label="Default select example" name="size" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
+                <select class="form-select" aria-label="Default select example" id="Size" name="size" style="border: 2px solid rgba(128, 128, 128, 0.448); margin-bottom:10px;">
                     <option selected>size</option>
                     {% for size in sizes %}
                         <option value="{{ size.id }}" {% if size.id == variants.size.id %}selected{% endif %}>
@@ -50,7 +50,7 @@
 
                 <div class="mb-3">
                     <label for="images" class="form-label">Images</label>
-                    <input type="file" class="form-control" id="images" name="images" multiple>
+                    <input type="file" class="form-control" id="category_image" name="images" multiple>
                 </div>
                 <div class="mb-3">
                     <label for="existing_images" class="form-label">Existing Images</label>
@@ -77,6 +77,9 @@
         <button type="submit" class="btn btn-primary">SUBMIT</button>
     </form>
 </div>
+{% endblock %}
+{% block script%}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
     // Image preview functionality
     function previewImages(input) {
@@ -106,4 +109,91 @@
     });
 </script>
 
+<script>
+    document.getElementById("ProductvariantId").addEventListener("submit",(e)=>{
+      e.preventDefault()
+      const Size = document.getElementById("Size").value;
+      const price = document.getElementById("price").value;
+      const stock = document.getElementById("stock").value;
+
+        if (!isValidShoeSize(Size)) {
+            // alert("Invalid banner name");
+            Swal.fire({
+            icon: 'error',
+            title: 'Invalid Size',
+            text: 'Invalid shoe size. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+            });
+        } else if (!isValidPrice(price)) {
+            // alert("Invalid banner name");
+            Swal.fire({
+            icon: 'error',
+            title: 'Invalid price',
+            text: 'Invalid price. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+            });
+        } else if (!isValidStock(stock)) {
+            // alert("Invalid banner name");
+            Swal.fire({
+            icon: 'error',
+            title: 'Invalid stock',
+            text: 'Invalid stock. Please check your input.',
+            confirmButtonColor: 'goldenrod'
+            });
+        }else {
+          e.target.submit();
+        }
+    })
+
+    document.getElementById('product_image').addEventListener('change', handleImageInputChange);
+
+    function validate() {
+        
+    }
+
+    function isValidShoeSize(Size) {
+            // Define a reasonable range for valid shoe sizes
+            const minSize = 1;
+            const maxSize = 20;
+
+            // Check if the size is within the valid range
+            return Size >= minSize && Size <= maxSize;
+        }
+        function isValidPrice(price) {
+            // Check if the price is a non-negative value
+            return price >= 0;
+        }
+        function isValidStock(stock) {
+            // Check if the price is a non-negative value
+            return stock >= 0;
+        }
+
+    function isValidImage(file) {
+    const allowedExtensions = ["jpg", "jpeg", "png", "gif","avif"];
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+
+    return allowedExtensions.includes(fileExtension) && file.size <= maxSizeInBytes;
+    }
+
+    // Function to handle image input change event
+    function handleImageInputChange(event) {
+        const input = event.target; 
+
+    for (const file of input.files) {
+      if (!isValidImage(file)) {
+        // Show SweetAlert error message
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Image',
+          text: 'Allowed formats are JPG, JPEG, PNG, and GIF (up to 5MB).',
+          confirmButtonColor: 'goldenrod'
+        });
+
+        input.value = ""; // Reset the input value to clear the invalid selection
+        return;
+      }
+    }
+}
+  </script>
 {% endblock %}
